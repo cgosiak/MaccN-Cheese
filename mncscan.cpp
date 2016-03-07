@@ -52,10 +52,10 @@ void Scanner::BufferChar(char c)
 
 Token Scanner::CheckReserved()
 {
-	if (tokenBuffer == "BEGIN") return BEGIN_SYM;
-	if (tokenBuffer == "END") return END_SYM;
-	if (tokenBuffer == "READ") return READ_SYM;
-	if (tokenBuffer == "WRITE") return WRITE_SYM;
+	//if (tokenBuffer == "BEGIN") return BEGIN_SYM;
+	//if (tokenBuffer == "END") return END_SYM;
+	if (tokenBuffer == "LISTEN") return LISTEN_SYM;
+	if (tokenBuffer == "SHOUT") return SHOUT_SYM;
 	return ID;
 }
 
@@ -169,7 +169,7 @@ Token Scanner::GetNextToken()
 					currentChar = NextChar();
 				}
 				else if (currentChar == '"' && c != '"'){
-					return STR_LITERAL;
+					return CHEESE_LITERAL;
 				}
 				stringBuffer += currentChar;
 			}
