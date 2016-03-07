@@ -1,0 +1,21 @@
+Compiler Construction
+Steven Prichard 
+Grammer
+NOTE: ¬ = Lambda 
+
+<statement>	 ->	<id>:=<expression>;
+			| listen <variable_list> ;	
+			| shout <variable_list> ;
+
+<variable_list>	 ->	<id><id_tail> ;
+
+<id>		 ->	<TYPE>			 
+			| ¬
+
+<id_tail>	->	, <id><id_tail> ;
+			| ¬
+
+
+*Should <type> handle the special CHEESE(string) white space requirements? 
+**Should <type> handle the HIPHIP requirements?
+***Should shout produce a variable_list? or expression_list like the Micro grammar?

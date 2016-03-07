@@ -1,0 +1,28 @@
+
+	<select>        			-> select ( <boolean expression> ) <list of cases> <end> #the 
+
+	<list of cases> 		-> <case> <list of cases> | <otherwise> 
+
+	<case> 				-> case <primary>  : <statement list>
+
+	<statement list>		-> <statement> <statement list> | LAMBDA
+
+	<statement>			-> <primary>  | <break> 
+
+	<otherwise> 			-> <statement list> 
+
+	<boolean expression> 	-> <primary> <boolean expression tail> | <bool>
+
+	<boolean exp tail>		-> <bool op> <primary> | LAMBDA
+
+	<primary> 			-> <ident> <primary tail> | INTEGER_LITERAL | FLOAT_LITERAL | CHESE_LITERAL | HIPHIP_ LITERAL
+
+	<bool>				-> BOOLEAN_LITERAL
+
+	<bool op> 			-> LESS_THAN | MORE_THAN | MORE_EQUAL | LESS_EQUAL | EQUAL_TO
+
+	<primary tail> 			-> <primary> <primary tail> | LAMBDA
+
+	<ident> 				-> ID
+
+	<end> 				-> LAMBDA?
