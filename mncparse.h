@@ -88,8 +88,100 @@ private:
 	void StatementList();
 	// Checks <statement list> syntax and semantics.
 
+	void StatementTail();
+
 	void Statement();
 	// Checks <statement> syntax and semantics.
+
+	void SimpleStatement();
+
+	void AssignStatement();
+
+	void ListenStatement();
+
+	void VariableList();
+
+	void VariableListTail();
+
+	void Variable();
+
+	void VariableTail();
+
+	void ShoutStatement();
+
+	void ItemList();
+
+	void ItemListTail();
+
+	void BreakStatement();
+
+	void StructStatment();
+
+	void IfStmt();
+
+	void ElseClause();
+
+	void LoopStmt();
+
+	void WhileStmt();
+
+	void ForStmt();
+
+	void SelectStmt();
+
+	void CaseList();
+
+	void CaseListTail();
+
+	void Case();
+
+	void IntList();
+
+	void IntListTail();
+
+	void CaseListEnd();
+
+	void CondTail();
+
+	void Expression();
+
+	void ExprTail();
+
+	void Factor();
+
+	void FactorTail();
+
+	void Primary();
+
+	void Type();
+
+	void BoolLit();
+
+	void Literal();
+
+	void MultOp();
+
+	void AddOp();
+
+	void RelOp();
+
+	void VarDecs();
+
+	void DecList();
+
+	void DecTail();
+
+	void Declaration();
+
+	void VarDecList();
+
+	void VarDecTail();
+
+	void Init();
+
+	void InitList();
+
+	void InitTail();
 
 	void IdList();
 	// Checks <id list> syntax and semantics.

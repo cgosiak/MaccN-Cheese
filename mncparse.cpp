@@ -77,8 +77,8 @@ void Parser::SystemGoal()
 	//Match(EOF_SYM);
 	//code.Finish();  /*** CODE ***/
 
-	while () {
-		cout << Token;
+	while (NextToken() != NULL) {
+		cout << NextToken();
 	}
 
 
@@ -109,6 +109,8 @@ void Parser::StatementList()
 		}
 	}
 }
+
+void Parser::StatementTail(){}
 
 void Parser::Statement()
 {
@@ -142,6 +144,26 @@ void Parser::Statement()
 		SyntaxError(NextToken());
 	}
 }
+
+void Parser::SimpleStatement(){}
+
+void Parser::AssignStatement(){}
+
+void Parser::ListenStatement(){}
+
+void Parser::VariableList(){}
+
+void Parser::VariableListTail(){}
+
+void Parser::Variable(){}
+
+void Parser::VariableTail(){}
+
+void Parser::ShoutStatement(){}
+
+void Parser::ItemList(){}
+
+void Parser::ItemListTail(){}
 
 void Parser::IdList()
 {
