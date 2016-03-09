@@ -29,6 +29,61 @@ extern ofstream outFile, listFile;
 #include "mascan.h"
 
 // *******************
+// **     Tokens    **
+// *******************
+//RESERVED WORD		  TOKEN             NAMING CONVENTION		SCANNER DONE
+//"$eof$"             EOF_SYM.			-Done
+//"bool"              BOOL_SYM.
+//"break"             BREAK_SYM.
+//"case"              CASE_SYM.
+//"cheese"            CHEESE_SYM.
+//"decs"              DECS_SYM.
+//"do"                DO_SYM.
+//"else"              ELSE_SYM.
+//"end"               END_SYM.			-Done
+//"false"             FALSE_SYM.
+//"float"             FLOAT_SYM.
+//"for"               FOR_SYM.
+//"hiphip"            HIPHIP_SYM.
+//"if"                IF_SYM.
+//"int"               INT_SYM.
+//"listen"            LISTEN_SYM.		-Done
+//"otherwise"         OTHERWISE_SYM.
+//"select"            SELECT_SYM.
+//"shout"             SHOUT_SYM.		-Done
+//"then"              THEN_SYM.
+//"true"              TRUE_SYM.
+//"while"             WHILE_SYM.
+//"["                 LSTAPLE.
+//"]"                 RSTAPLE.
+//"("                 LBANANA.			-Done
+//")"                 RBANANA.			-Done
+//"{"                 LMUSTACHE.
+//"}"                 RMUSTACHE.
+//":"                 COLON.
+//";"                 SEMICOLON.		-Done
+//","                 COMMA.			-Done
+//"="                 ASSIGN_OP.		-Done
+//"+"                 PLUS_OP.			-Done
+//"-"                 MINUS_OP.			-Done
+//"*"                 MULT_OP.
+//"/"                 DIV_OP.
+//"<"                 LT_OP.
+//"<="                LE_OP.
+//">"                 GT_OP.
+//">="                GE_OP.
+//"=="                EQ_OP1.
+//"!!"                EQ_OP2.
+//"!="                NE_OP.
+//"ID"                ID.				-Done
+//"BOOL_LIT"          BOOL_LIT.
+//"INT_LIT"           INT_LIT.			-Done
+//"FLOAT_LIT"         FLOAT_LIT.
+//"CHEESE_LIT"        CHEESE_LIT.		-Done
+
+int x = 0; // Get rid of later
+
+// *******************
 // **  Constructor  **
 // *******************
 
@@ -53,7 +108,7 @@ void Scanner::BufferChar(char c)
 Token Scanner::CheckReserved()
 {
 	//if (tokenBuffer == "BEGIN") return BEGIN_SYM;
-	//if (tokenBuffer == "END") return END_SYM;
+	if (tokenBuffer == "END") return END_SYM;
 	if (tokenBuffer == "LISTEN") return LISTEN_SYM;
 	if (tokenBuffer == "SHOUT") return SHOUT_SYM;
 	return ID;
@@ -128,12 +183,12 @@ Token Scanner::GetNextToken()
 				BufferChar(currentChar);
 				c = sourceFile.peek();
 			}
-			return INT_LITERAL;
+			return INT_LIT;
 		}
 		else if (currentChar == '(')
-			return LPAREN;
+			return LBANANA;
 		else if (currentChar == ')')
-			return RPAREN;
+			return RBANANA;
 		else if (currentChar == ';')
 			return SEMICOLON;
 		else if (currentChar == ',')
@@ -169,7 +224,7 @@ Token Scanner::GetNextToken()
 					currentChar = NextChar();
 				}
 				else if (currentChar == '"' && c != '"'){
-					return CHEESE_LITERAL;
+					return CHEESE_LIT;
 				}
 				stringBuffer += currentChar;
 			}

@@ -48,7 +48,6 @@
 "INT_LIT"           INT_LIT.
 "FLOAT_LIT"         FLOAT_LIT.
 "CHEESE_LIT"        CHEESE_LIT.
-
 *grammar
 <program>           <stmt_list>
 <stmt_list>         <statement> <stmt_tail>
