@@ -51,7 +51,7 @@
 #ifndef PARSER
 #define PARSER
 
-#include "macode.h"
+#include "mnccode.h"
 
 class Parser
 {

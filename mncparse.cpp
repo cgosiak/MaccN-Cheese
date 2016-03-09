@@ -27,9 +27,9 @@ using namespace std;
 extern ifstream sourceFile;
 extern ofstream outFile, listFile;
 
-#include "mascan.h"   // Scanner class definition
-#include "maparse.h"  // Parser class definition
-#include "macode.h"   // CodeGen class definition
+#include "mncscan.h"   // Scanner class definition
+#include "mncparse.h"  // Parser class definition
+#include "mnccode.h"   // CodeGen class definition
 
 extern Scanner scan; // global scanner declared in micro.cpp
 extern CodeGen code; // global code generator declared in micro.cpp
@@ -73,9 +73,15 @@ void Parser::SyntaxError(Token t)
 
 void Parser::SystemGoal()
 {
-	ProgramProc();
-	Match(EOF_SYM);
-	code.Finish();  /*** CODE ***/
+	//ProgramProc();
+	//Match(EOF_SYM);
+	//code.Finish();  /*** CODE ***/
+
+	while () {
+		cout << Token;
+	}
+
+
 }
 
 void Parser::ProgramProc()         
