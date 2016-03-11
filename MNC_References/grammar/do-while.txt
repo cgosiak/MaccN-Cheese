@@ -1,0 +1,4 @@
+Grammar for do-while:
+
+	<statement>   ->   do <statement_list> while ( <bool_expr )
+	<bool_expr>   ->   BOOL_LITERAL | <ident> | <relational_expr>

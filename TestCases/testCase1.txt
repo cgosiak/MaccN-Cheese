@@ -1,0 +1,13 @@
+
+decs {
+	Cheese: hw, prompt;
+	Int: x, y, z;
+}
+
+hw = "Hello World";
+shout hw;
+prompt = "Please enter two numbers separated by comma.";
+
+listen x,y;
+z = x + y;
+shout z;
