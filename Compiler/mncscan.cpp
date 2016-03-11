@@ -107,10 +107,32 @@ void Scanner::BufferChar(char c)
 
 Token Scanner::CheckReserved()
 {
-	//if (tokenBuffer == "BEGIN") return BEGIN_SYM;
+	//if (tokenBuffer == "BEGIN") return BEGIN_SYM; // no "begin" token
 	if (tokenBuffer == "END") return END_SYM;
 	if (tokenBuffer == "LISTEN") return LISTEN_SYM;
 	if (tokenBuffer == "SHOUT") return SHOUT_SYM;
+	if (tokenBuffer == "$eof$") return EOF_SYM;
+	if (tokenBuffer == "BOOL") return BOOL_SYM;
+	if (tokenBuffer == "BREAK") return BREAK_SYM;
+	if (tokenBuffer == "CASE") return CASE_SYM;
+	if (tokenBuffer == "CHEESE") return CHEESE_SYM;
+	if (tokenBuffer == "DECS") return DECS_SYM;
+	if (tokenBuffer == "DO") return DO_SYM;
+	if (tokenBuffer == "ELSE") return ELSE_SYM;
+	if (tokenBuffer == "END") return END_SYM;
+	if (tokenBuffer == "FALSE") return FALSE_SYM;
+	if (tokenBuffer == "FLOAT") return FLOAT_SYM;
+	if (tokenBuffer == "FOR") return FOR_SYM;
+	if (tokenBuffer == "HIPHIP") return HIPHIP_SYM;
+	if (tokenBuffer == "IF") return IF_SYM;
+	if (tokenBuffer == "INT") return INT_SYM;
+	if (tokenBuffer == "LISTEN") return LISTEN_SYM;
+	if (tokenBuffer == "OTHERWISE") return OTHERWISE_SYM;
+	if (tokenBuffer == "SELECT") return SELECT_SYM;
+	if (tokenBuffer == "SHOUT") return SHOUT_SYM;
+	if (tokenBuffer == "THEN") return THEN_SYM;
+	if (tokenBuffer == "TRUE") return TRUE_SYM;
+	if (tokenBuffer == "WHILE") return WHILE_SYM;
 	return ID;
 }
 
@@ -185,6 +207,16 @@ Token Scanner::GetNextToken()
 			}
 			return INT_LIT;
 		}
+		// Added section here: start
+		else if (currentChar == '[')
+			return LSTAPLE;
+		else if (currentChar == ']')
+			return RSTAPLE;
+		else if (currentChar == '{')
+			return LMUSTACHE;
+		else if (currentChar == '}')
+			return RMUSTACHE;
+		// Added section here: end
 		else if (currentChar == '(')
 			return LBANANA;
 		else if (currentChar == ')')
