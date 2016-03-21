@@ -1,0 +1,18 @@
+decs{
+	int: x;
+	cheese: prompt;
+}
+
+listen x;
+prompt = "Nothing matched the cases";
+
+select(x)
+	case: 1
+	shout x;
+	case: 2
+	shout x;
+	case: 3
+	shout x;
+	otherwise:
+	shout prompt;
+end

@@ -1,0 +1,19 @@
+decs { 
+	hiphip[20] cheese[20]: dty;
+	int x;
+}
+
+x = 0;
+
+do
+listen dty[x];
+x = x + 1;
+until(x < 20)
+
+x = 0;
+
+while(x < 20)
+shout dty[x];
+x = x + 1;
+end
+
