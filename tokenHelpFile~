@@ -27,7 +27,7 @@ if (tokenBuffer == "WHILE") return WHILE_SYM;
 "{"                 LMUSTACHE;	-done
 "}"                 RMUSTACHE; 	-done
 ":"                 COLON;
-";"                 SEMICOLON;	-done
+";"                 SEMICOLON;
 ","                 COMMA;
 "="                 ASSIGN_OP;
 "+"                 PLUS_OP; 
