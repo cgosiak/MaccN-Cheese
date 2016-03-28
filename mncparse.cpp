@@ -165,6 +165,22 @@ void Parser::ItemList(){}
 
 void Parser::ItemListTail(){}
 
+void Parser::BreakStatement(){}
+
+void Parser::StructStatment(){}
+
+void Parser::IfStmt(){}
+
+void Parser::ElseClause(){}
+
+void Parser::LoopStmt(){}
+
+void Parser::WhileStmt(){}
+
+void Parser::ForStmt(){}
+
+
+
 void Parser::IdList()
 {
 	ExprRec identifier;
