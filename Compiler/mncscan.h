@@ -29,53 +29,53 @@ const int ID_STRING_LEN = 32;
 // *******************
 //RESERVED WORD		  TOKEN             NAMING CONVENTION		SCANNER DONE
 //"$eof$"             EOF_SYM.			-Done					-Done
-//"bool"              BOOL_SYM.
-//"break"             BREAK_SYM.
-//"case"              CASE_SYM.
-//"cheese"            CHEESE_SYM.
-//"decs"              DECS_SYM.
-//"do"                DO_SYM.
-//"else"              ELSE_SYM.
-//"end"               END_SYM.			-Done
-//"false"             FALSE_SYM.
-//"float"             FLOAT_SYM.
-//"for"               FOR_SYM.
-//"hiphip"            HIPHIP_SYM.
-//"if"                IF_SYM.
-//"int"               INT_SYM.
-//"listen"            LISTEN_SYM.		-Done
-//"otherwise"         OTHERWISE_SYM.
-//"select"            SELECT_SYM.
-//"shout"             SHOUT_SYM.		-Done
-//"then"              THEN_SYM.
-//"true"              TRUE_SYM.
-//"while"             WHILE_SYM.
-//"["                 LSTAPLE.
-//"]"                 RSTAPLE.
-//"("                 LBANANA.			-Done
-//")"                 RBANANA.			-Done
-//"{"                 LMUSTACHE.
-//"}"                 RMUSTACHE.
-//":"                 COLON.
-//";"                 SEMICOLON.		-Done
-//","                 COMMA.			-Done
-//"="                 ASSIGN_OP.		-Done
-//"+"                 PLUS_OP.			-Done
-//"-"                 MINUS_OP.			-Done
-//"*"                 MULT_OP.
-//"/"                 DIV_OP.
-//"<"                 LT_OP.
-//"<="                LE_OP.
-//">"                 GT_OP.
-//">="                GE_OP.
-//"=="                EQ_OP1.
-//"!!"                EQ_OP2.
-//"!="                NE_OP.
-//"ID"                ID.				-Done
-//"BOOL_LIT"          BOOL_LIT.
-//"INT_LIT"           INT_LIT.			-Done
-//"FLOAT_LIT"         FLOAT_LIT.
-//"CHEESE_LIT"        CHEESE_LIT.		-Done
+//"bool"              BOOL_SYM.			-Done					-Done
+//"break"             BREAK_SYM.		-Done					-Done
+//"case"              CASE_SYM.			-Done					-Done
+//"cheese"            CHEESE_SYM.		-Done					-Done
+//"decs"              DECS_SYM.			-Done					-Done
+//"do"                DO_SYM.			-Done					-Done
+//"else"              ELSE_SYM.			-Done					-Done
+//"end"               END_SYM.			-Done					-Done
+//"false"             FALSE_SYM.		-Done					-Done
+//"float"             FLOAT_SYM.		-Done					-Done
+//"for"               FOR_SYM.			-Done					-Done
+//"hiphip"            HIPHIP_SYM.		-Done					-Done
+//"if"                IF_SYM.			-Done					-Done
+//"int"               INT_SYM.			-Done					-Done
+//"listen"            LISTEN_SYM.		-Done					-Done
+//"otherwise"         OTHERWISE_SYM.	-Done					-Done
+//"select"            SELECT_SYM.		-Done					-Done
+//"shout"             SHOUT_SYM.		-Done					-Done
+//"then"              THEN_SYM.			-Done					-Done
+//"true"              TRUE_SYM.			-Done					-Done
+//"while"             WHILE_SYM.		-Done					-Done
+//"["                 LSTAPLE.			-Done					-Done
+//"]"                 RSTAPLE.			-Done					-Done
+//"("                 LBANANA.			-Done					-Done
+//")"                 RBANANA.			-Done					-Done
+//"{"                 LMUSTACHE.		-Done					-Done
+//"}"                 RMUSTACHE.		-Done					-Done
+//":"                 COLON.			-Done					-Done
+//";"                 SEMICOLON.		-Done					-Done
+//","                 COMMA.			-Done					-Done
+//"="                 ASSIGN_OP.		-Done					-Done
+//"+"                 PLUS_OP.			-Done					-Done
+//"-"                 MINUS_OP.			-Done					-Done
+//"*"                 MULT_OP.			-Done					-Done
+//"/"                 DIV_OP.			-Done					-Done
+//"<"                 LT_OP.			-Done					-Done
+//"<="                LE_OP.			-Done					-Done
+//">"                 GT_OP.			-Done					-Done
+//">="                GE_OP.			-Done					-Done
+//"=="                EQ_OP1.			-Done					-Done
+//"!!"                EQ_OP2.			-Done					-Done
+//"!="                NE_OP.			-Done					-Done
+//"ID"                ID.				-Done					-Done
+//"BOOL_LIT"          BOOL_LIT.			-Done					-Done
+//"INT_LIT"           INT_LIT.			-Done					-Done
+//"FLOAT_LIT"         FLOAT_LIT.		-Done					-Done
+//"CHEESE_LIT"        CHEESE_LIT.		-Done					-Done
 
 /*
 enum Token  { BEGIN_SYM, END_SYM, EOF_SYM,
