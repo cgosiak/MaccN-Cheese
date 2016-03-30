@@ -190,6 +190,15 @@ void CodeGen::Finish()
 	listFile.close();
 }
 
+void CodeGen::Shout(ExprRec& e) {
+	e.val = atoi(scan.tokenBuffer.data());
+
+	string s;
+	IntToAlpha(e.val, s);
+
+	Generate("WRI       ", s, "");	
+}
+
 void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, 
                        const ExprRec & e2, ExprRec& e)
 {

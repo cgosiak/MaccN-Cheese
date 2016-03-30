@@ -1,0 +1,39 @@
+
+
+ M A C C - N - C H E E S E   C O M P I L E R   L I S T I N G
+
+					   Team HomeAID
+					   Version 2016
+
+		   Generated code is SAM assembly language for
+				the MACC2 virtual computer.
+ _______________________________________________________________
+
+ March 30, 2016 at 08:05 AM
+ Source file: test1.mnc
+
+ LINE #
+     1  deCs {
+     2  inT: a, b;
+     3  chEese: m, n, c;
+     4  float: x, y;
+     5  }
+     6  a=      5;
+     7  b =6;
+     8  shout(a, b);
+     9  shout(m, n, c);
+    10  select(a)
+    11  	case 1:
+    12  	case 2:
+    13  	case 5:
+    14  	otherwise:
+    15  end
+    16  if (a <= 10)
+    17  	if (b == 10)
+    18  		if (b!!10)
+    19  			if (b >= 10)
+    20  				m = "candy"
+    21  			end
+    22  		end
+    23  	end
+    24  end

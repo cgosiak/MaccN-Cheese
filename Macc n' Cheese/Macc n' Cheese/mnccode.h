@@ -1,23 +1,3 @@
-/*	____________________________________________________________________________
-
-	           Semantics and Coding Component for the Micro Compiler
-
-	                                 mcode.h
-
-	                              Version 2007
- 
-	                           James L. Richards
-	                     Last Update: August 28, 2007
-	                     Update by M. J. Wolf: January 21,2016
-
-	The routines in this unit are based on those provided in the book
-	"Crafting A Compiler" by Charles N. Fischer and Richard J. LeBlanc, Jr.,
-	Benjamin Cummings Publishing Co. (1991).
-
-	The target language is SAM assembly language for the MACC2 virtual computer.
-	____________________________________________________________________________
-*/
-
 #ifndef CODEGEN
 #define CODEGEN
 
@@ -27,45 +7,72 @@ using namespace std;
 
 #include "mncscan.h"
 
-enum OpKind { PLUS, MINUS };
+enum OpKind { PLUS, MINUS, MULT, DIVN };
 
 struct OpRec // information about an operator
 {
-	OpKind op; // operator type
+	OpKind op;
 };
 
 enum ExprKind { ID_EXPR, LITERAL_EXPR, TEMP_EXPR };
 
 struct ExprRec // information about a constant, variable, or
-               // an intermediate (temporary) result
+	// an intermediate (temporary) result
 {
-   ExprKind kind;   // operand type
-   string   name;   // used when kind is ID_EXPR or TEMP_EXPR
-   int      val;    // used when kind is LITERAL_EXPR
+	ExprKind kind;   // operand type
+	string   name;   // used when kind is ID_EXPR or TEMP_EXPR
+	int      val;    // used when kind is LITERAL_EXPR
 };
 
-class CodeGen
-{
-public:
+class CodeGen {
+	public:
 
 	CodeGen();
 	// Initializes the code generator;
 
-/* _____________________________________________________________________________
-*/
+	/* _____________________________________________________________________________
+	*/
 
-	void Assign(const ExprRec & target, const ExprRec & source);
-	// Produces the assembly code for an assignment from Source to Target.
+	void Start();
+	// Initializes the compiler.
 
 	void Finish();
 	// Generates code to finish the program.
 
-	void GenInfix(const ExprRec & e1, const OpRec & op, 
-	              const ExprRec & e2, ExprRec& e);
-	// Produces the assembly code for an infix operation.
+	void ProcessVar();
+
+	void Assign(const ExprRec & target, const ExprRec & source);
+	// Produces the assembly code for an assignment from Source to Target.
+
+	void Listen();
+
+	void Break();
 
 	void NewLine();
 	// Produces the assembly code for starting a new output line.
+
+	void Shout(ExprRec& e1);
+
+	void IfThen();
+
+	void IfElse();
+
+	void IfEnd();
+
+	void LoopBegin();
+
+	void LoopEnd();
+
+	void WhileBegin();
+
+	void WhileEnd();
+
+
+	void GenInfix(const ExprRec & e1, const OpRec & op,
+		const ExprRec & e2, ExprRec& e);
+	// Produces the assembly code for an infix operation.
+
+
 
 	void ProcessId(ExprRec& e);
 	// Declares the identifier in the token buffer and builds a
@@ -82,18 +89,17 @@ public:
 	void ReadId(const ExprRec & InVar);
 	// Produces the assembly code for reading a value for InVar.
 
-	void Start();
-	// Initializes the compiler.
+
 
 	void WriteExpr(const ExprRec & OutExpr);
 	// Produces the assembly code for writing the value of OutExpr.
-	
+
 	void WriteString();
 
-/* _____________________________________________________________________________
-*/
+	/* _____________________________________________________________________________
+	*/
 
-private:
+	private:
 
 	vector<string> symbolTable;
 

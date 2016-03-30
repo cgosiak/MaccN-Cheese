@@ -1,0 +1,24 @@
+deCs {
+inT: a, b;
+chEese: m, n, c;
+float: x, y;
+}
+a=      5;
+b =6;
+shout(a, b);
+shout(m, n, c);
+select(a)
+	case 1:
+	case 2:
+	case 5:
+	otherwise:
+end
+if (a <= 10)
+	if (b == 10)
+		if (b!!10)
+			if (b >= 10)
+				m = "candy"
+			end
+		end
+	end
+end

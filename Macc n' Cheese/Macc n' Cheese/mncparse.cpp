@@ -10,6 +10,95 @@ using namespace std;
 
 #include "mncparse.h"
 #include "mnccode.h"
+#include "mncscan.h"
+
+
+
+
+
+
+
+
+
+#pragma region gettokentext
+
+#define X(x) { x, #x },
+struct Tokens {
+	int id;
+	char* pname;
+} Tokens[] =
+{
+	X(EOF_SYM)
+	X(BOOL_SYM)
+	X(BREAK_SYM)
+	X(CASE_SYM)
+	X(CHEESE_SYM)
+	X(DECS_SYM)
+	X(DO_SYM)
+	X(ELSE_SYM)
+	X(END_SYM)
+	X(FALSE_SYM)
+	X(FLOAT_SYM)
+	X(FOR_SYM)
+	X(HIPHIP_SYM)
+	X(IF_SYM)
+	X(INT_SYM)
+	X(LISTEN_SYM)
+	X(OTHERWISE_SYM)
+	X(SELECT_SYM)
+	X(SHOUT_SYM)
+	X(THEN_SYM)
+	X(TRUE_SYM)
+	X(WHILE_SYM)
+	X(UNTIL_SYM)
+	X(LSTAPLE)
+	X(RSTAPLE)
+	X(LBANANA)
+	X(RBANANA)
+	X(LMUSTACHE)
+	X(RMUSTACHE)
+	X(COLON)
+	X(SEMICOLON)
+	X(COMMA)
+	X(ASSIGN_OP)
+	X(PLUS_OP)
+	X(MINUS_OP)
+	X(MULT_OP)
+	X(DIV_OP)
+	X(LT_OP)
+	X(LE_OP)
+	X(GT_OP)
+	X(GE_OP)
+	X(EQ_OP1)
+	X(EQ_OP2)
+	X(NE_OP)
+	X(ID)
+	X(INT_LIT)
+	X(FLOAT_LIT)
+	X(CHEESE_LIT)
+};
+#undef X
+
+std::string getTokenText(int token) {
+	int size = (sizeof(Tokens) / sizeof(*Tokens));
+	for (int i = 0; i < size; i++) {
+		if (token == Tokens[i].id)
+			return Tokens[i].pname;
+	}
+	return "";
+}
+
+#pragma endregion
+
+
+
+
+
+
+
+
+extern CodeGen code;
+extern Scanner scan;
 
 Parser::Parser()
 {
@@ -269,10 +358,13 @@ void Parser::Primary()
 	case TRUE_SYM:
 	case INT_LIT:
 	case FLOAT_LIT:
-	case CHEESE_LIT:
+	case CHEESE_LIT:{
 		Literal();
-		// code.ProcessLit();
+
+		ExprRec e;
+		code.ProcessLiteral(e);
 		break;
+	}
 	case ID:
 		Variable();
 		// code.ProcessVar();
@@ -559,12 +651,14 @@ void Parser::IfStmt()
 
 void Parser::ItemListTail()
 {
+	ExprRec expr;
+
 	switch (NextToken())
 	{
 	case COMMA:
 		Match(COMMA);
 		Expression();
-		// code.Shout();
+		code.Shout(expr);
 		ItemListTail();
 		break;
 	case SEMICOLON:
@@ -576,8 +670,10 @@ void Parser::ItemListTail()
 
 void Parser::ItemList()
 {
+	ExprRec expr;
+
 	Expression();
-	// code.Shout();
+	code.Shout(expr);
 	ItemListTail();
 }
 
@@ -820,13 +916,22 @@ void Parser::StmtList()
 
 void Parser::Program()
 {
-	// code.Start();
+	code.Start();
 	StmtList();
-	// code.Finish();
+	code.Finish();
 }
 
-void Parser::SystemGoal()
-{
+void Parser::SystemGoal() {
+	/*cout << '\n';
+	int a;
+	while ((a = NextToken()) != EOF_SYM){
+		tokenAvailable = false;
+		scan.tokenBuffer;
+		cout << getTokenText(a) << " -> " << scan.tokenBuffer << '\n';
+	}
+	cin.get();*/
+
+
 	Program();
 	Match(EOF_SYM);
 }
