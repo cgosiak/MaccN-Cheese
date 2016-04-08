@@ -10,12 +10,16 @@ int main() {
     SymbolTable mst;
 
     mst.AddEntry("X",TYPE_CHEESE);
-    mst.AddEntry("Y",TYPE_CHEESE);
-    mst.AddEntry("Z",TYPE_CHEESE);
+    mst.AddEntry("Y",TYPE_BOOL);
+    mst.AddEntry("A",TYPE_BOOL);
+    mst.AddEntry("Z",TYPE_INT);
+    mst.AddEntry("B",TYPE_INT);
 
     mst.UpdateEntry("X","Hello");
-    mst.UpdateEntry("Y","World");
-    mst.UpdateEntry("Z","Caleb");
+    mst.UpdateEntry("Y","false");
+    mst.UpdateEntry("A","caleb");
+    mst.UpdateEntry("Z","10");
+    mst.UpdateEntry("B","10.1");
 
     cout << mst.GetDataObject("X").GetValue() << endl;
     cout << mst.GetDataObject("Y").GetValue() << endl;

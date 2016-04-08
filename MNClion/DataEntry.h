@@ -7,7 +7,7 @@
 
 #include <string>
 
-enum DataTypes  { TYPE_BOOL, TYPE_CHEESE, TYPE_INT, TYPE_FLOAT};
+enum DataTypes  { TYPE_BOOL, TYPE_CHEESE, TYPE_INT, TYPE_FLOAT, TYPE_NONE};
 
 class DataEntry {
 
@@ -34,6 +34,17 @@ private:
 
     // Value assigned to variable
     std::string value;
+
+    // Some type checking
+    bool isInt(const std::string & s); // checks if the string passed is of type int
+
+    bool isBool(const std::string & s); // checks if the string passed is a valid bool
+
+    // Type conversion
+    std::string UpperCase(std::string s); // upper cases a string, returns upper cased string
+
+    // Some error raising
+    void RaiseError_Assignment(std::string in, std::string t); // assignment error
 
 };
 
