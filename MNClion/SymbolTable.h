@@ -24,7 +24,7 @@ public:
     DataEntry GetDataObject(std::string id); // returns the data entry object
 
 private:
-    int total_entries; // Current amount of stored data entries
+    int total_entries = 0; // Current amount of stored data entries
 
     std::vector<DataEntry> table_entries; // Vector object containing all entries
 
