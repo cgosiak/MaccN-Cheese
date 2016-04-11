@@ -21,9 +21,9 @@ int main() {
     mst.UpdateEntry("Z","10");
     mst.UpdateEntry("B","10.1");
 
-    cout << mst.GetDataObject("X").GetValue() << endl;
-    cout << mst.GetDataObject("Y").GetValue() << endl;
-    cout << mst.GetDataObject("Z").GetValue() << endl;
+    cout << mst.GetDataObject("X").GetValue() << " label name: " << mst.GetDataObject("X").GetDataLabel() << endl;
+    cout << mst.GetDataObject("Y").GetValue() << " label name: " << mst.GetDataObject("Y").GetDataLabel() << endl;
+    cout << mst.GetDataObject("Z").GetValue() << " label name: " << mst.GetDataObject("Z").GetDataLabel() << endl;
 
     return 0;
 }

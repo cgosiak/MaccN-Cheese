@@ -12,7 +12,7 @@ enum DataTypes  { TYPE_BOOL, TYPE_CHEESE, TYPE_INT, TYPE_FLOAT, TYPE_NONE};
 class DataEntry {
 
 public:
-    DataEntry(std::string id, DataTypes type); // initialization of entry
+    DataEntry(std::string id, DataTypes type, std::string label_name); // initialization of entry
 
     // void AssignType(DataTypes type); // define the type of the object
 
@@ -24,6 +24,8 @@ public:
 
     std::string GetID(); // return id of object
 
+    std::string GetDataLabel(); // return label name for assembly file
+
 private:
     DataTypes entry_type; // the type of the variable
 
@@ -31,6 +33,9 @@ private:
 
     // Name of variable
     std::string variable_name;
+
+    // Name in data section of assembly language
+    std::string label_value;
 
     // Value assigned to variable
     std::string value;

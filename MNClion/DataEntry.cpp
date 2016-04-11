@@ -6,9 +6,10 @@
 #include "DataEntry.h"
 #include <algorithm>
 
-DataEntry::DataEntry(std::string id, DataTypes type) {
+DataEntry::DataEntry(std::string id, DataTypes type, std::string label_name) {
     variable_name = id;
     entry_type = type;
+    label_value = label_name;
 }
 
 void DataEntry::AssignValue(std::string val) {
@@ -85,4 +86,8 @@ std::string DataEntry::UpperCase(std::string sr) {
     for (auto & c: s) c = toupper(c);
 
     return s;
+}
+
+std::string DataEntry::GetDataLabel() {
+    return label_value;
 }

@@ -16,9 +16,15 @@ void SymbolTable::AddEntry(std::string id, DataTypes type) {
         std::cout << "Already Exists!" << std::endl;
     }
     else {
+        // Add to total entries
+        total_entries++;
+
+        // Create label entry name
+        std::string lbl_name = "lbl" + std::to_string(total_entries);
+
         // Create a new entry
         std::cout << "Added entry!" << std::endl;
-        DataEntry my_entry(id, type);
+        DataEntry my_entry(id, type, lbl_name);
         table_entries.push_back(my_entry);
     }
 }
