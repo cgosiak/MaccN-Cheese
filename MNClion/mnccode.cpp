@@ -27,8 +27,10 @@ extern ofstream outFile, listFile;
 
 #include "mncscan.h"   // Scanner class definition
 #include "mnccode.h"
+#include "SymbolTable.h"
 
 extern Scanner scan; // global Scanner object declared in micro.cpp
+extern SymbolTable symbolTable; // global symbol table object
 
 // *******************
 // **  Constructor  **

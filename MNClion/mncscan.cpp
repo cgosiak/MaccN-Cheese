@@ -26,7 +26,62 @@ using namespace std;
 extern ifstream sourceFile;
 extern ofstream outFile, listFile;
 
-#include "mncscan.h"
+#include "mascan.h"
+
+// *******************
+// **     Tokens    **
+// *******************
+//RESERVED WORD		  TOKEN             NAMING CONVENTION		SCANNER DONE
+//"$eof$"             EOF_SYM.			-Done					-Done
+//"bool"              BOOL_SYM.			-Done					-Done
+//"break"             BREAK_SYM.		-Done					-Done
+//"case"              CASE_SYM.			-Done					-Done
+//"cheese"            CHEESE_SYM.		-Done					-Done
+//"decs"              DECS_SYM.			-Done					-Done
+//"do"                DO_SYM.			-Done					-Done
+//"else"              ELSE_SYM.			-Done					-Done
+//"end"               END_SYM.			-Done					-Done
+//"false"             FALSE_SYM.		-Done					-Done
+//"float"             FLOAT_SYM.		-Done					-Done
+//"for"               FOR_SYM.			-Done					-Done
+//"hiphip"            HIPHIP_SYM.		-Done					-Done
+//"if"                IF_SYM.			-Done					-Done
+//"int"               INT_SYM.			-Done					-Done
+//"listen"            LISTEN_SYM.		-Done					-Done
+//"otherwise"         OTHERWISE_SYM.	-Done					-Done
+//"select"            SELECT_SYM.		-Done					-Done
+//"shout"             SHOUT_SYM.		-Done					-Done
+//"then"              THEN_SYM.			-Done					-Done
+//"true"              TRUE_SYM.			-Done					-Done
+//"while"             WHILE_SYM.		-Done					-Done
+//"["                 LSTAPLE.			-Done					-Done
+//"]"                 RSTAPLE.			-Done					-Done
+//"("                 LBANANA.			-Done					-Done
+//")"                 RBANANA.			-Done					-Done
+//"{"                 LMUSTACHE.		-Done					-Done
+//"}"                 RMUSTACHE.		-Done					-Done
+//":"                 COLON.			-Done					-Done
+//";"                 SEMICOLON.		-Done					-Done
+//","                 COMMA.			-Done					-Done
+//"="                 ASSIGN_OP.		-Done					-Done
+//"+"                 PLUS_OP.			-Done					-Done
+//"-"                 MINUS_OP.			-Done					-Done
+//"*"                 MULT_OP.			-Done					-Done
+//"/"                 DIV_OP.			-Done					-Done
+//"<"                 LT_OP.			-Done					-Done
+//"<="                LE_OP.			-Done					-Done
+//">"                 GT_OP.			-Done					-Done
+//">="                GE_OP.			-Done					-Done
+//"=="                EQ_OP1.			-Done					-Done
+//"!!"                EQ_OP2.			-Done					-Done
+//"!="                NE_OP.			-Done					-Done
+//"ID"                ID.				-Done					-Done
+//"BOOL_LIT"          BOOL_LIT.			-Done					-Done
+//"INT_LIT"           INT_LIT.			-Done					-Done
+//"FLOAT_LIT"         FLOAT_LIT.		-Done					-Done
+//"CHEESE_LIT"        CHEESE_LIT.		-Done					-Done
+
+int x = 0; // Get rid of later
 
 // *******************
 // **  Constructor  **
@@ -52,29 +107,32 @@ void Scanner::BufferChar(char c)
 
 Token Scanner::CheckReserved()
 {
+	//if (tokenBuffer == "BEGIN") return BEGIN_SYM; // no "begin" token
+	if (tokenBuffer == "END") return END_SYM;
 	if (tokenBuffer == "LISTEN") return LISTEN_SYM;
 	if (tokenBuffer == "SHOUT") return SHOUT_SYM;
-	if (tokenBuffer == "DECS") return DECS_SYM;
-	if (tokenBuffer == "INT") return INT_SYM;
-	if (tokenBuffer == "CHEESE") return CHEESE_SYM;
-	if (tokenBuffer == "FLOAT") return FLOAT_SYM;
-	if (tokenBuffer == "BOOL") return  BOOL_SYM;
+	if (tokenBuffer == "$eof$") return EOF_SYM;
+	if (tokenBuffer == "BOOL") return BOOL_SYM;
 	if (tokenBuffer == "BREAK") return BREAK_SYM;
 	if (tokenBuffer == "CASE") return CASE_SYM;
-	if (tokenBuffer == "DO") return  DO_SYM;
+	if (tokenBuffer == "CHEESE") return CHEESE_SYM;
+	if (tokenBuffer == "DECS") return DECS_SYM;
+	if (tokenBuffer == "DO") return DO_SYM;
 	if (tokenBuffer == "ELSE") return ELSE_SYM;
 	if (tokenBuffer == "END") return END_SYM;
 	if (tokenBuffer == "FALSE") return FALSE_SYM;
+	if (tokenBuffer == "FLOAT") return FLOAT_SYM;
 	if (tokenBuffer == "FOR") return FOR_SYM;
 	if (tokenBuffer == "HIPHIP") return HIPHIP_SYM;
 	if (tokenBuffer == "IF") return IF_SYM;
+	if (tokenBuffer == "INT") return INT_SYM;
+	if (tokenBuffer == "LISTEN") return LISTEN_SYM;
 	if (tokenBuffer == "OTHERWISE") return OTHERWISE_SYM;
 	if (tokenBuffer == "SELECT") return SELECT_SYM;
+	if (tokenBuffer == "SHOUT") return SHOUT_SYM;
 	if (tokenBuffer == "THEN") return THEN_SYM;
 	if (tokenBuffer == "TRUE") return TRUE_SYM;
 	if (tokenBuffer == "WHILE") return WHILE_SYM;
-	if (tokenBuffer == "UNTIL") return UNTIL_SYM;
-
 	return ID;
 }
 
@@ -137,39 +195,40 @@ Token Scanner::GetNextToken()
 			}
 			return CheckReserved();
 		}
-		else if (isdigit(currentChar)) {                                // integer literal
+		else if (isdigit(currentChar))
+		{                                // integer literal
 			BufferChar(currentChar);
 			c = sourceFile.peek();
-			while (isdigit(c)) {
+			while (isdigit(c))
+			{
 				currentChar = NextChar();
 				BufferChar(currentChar);
 				c = sourceFile.peek();
+				if (c == ".") {
+					currentChar = NextChar();
+					BufferChar(currentChar);
+					c = sourceFile.peek();
+					while (isdigit(c))
+					{
+						currentChar = NextChar();
+						BufferChar(currentChar);
+						c = sourceFile.peek();
+					}
+					return FLOAT_LIT;
+				}
 			}
 			return INT_LIT;
 		}
-		else if (currentChar == '{') return LMUSTACHE;
-		else if (currentChar == '}') return RMUSTACHE;
-		else if (currentChar == ':') return COLON;
-		else if (currentChar == '+') return PLUS_OP;
-		else if (currentChar == '-') return MINUS_OP;
-		else if (currentChar == '*') return MULT_OP;
-		else if (currentChar == '/') return DIV_OP;
-		else if (currentChar == '<') 
-			if (sourceFile.peek() == '=') {//  <= operator
-				currentChar = NextChar();
-				return LE_OP;
-			}
-			else
-				return LT_OP;
-		else if (currentChar == '[') return LSTAPLE;
-		else if (currentChar == ']') return RSTAPLE;
-		else if (currentChar == '>') 
-			if (sourceFile.peek() == '=') {//  >= operator
-				currentChar = NextChar();
-				return GE_OP;
-			}
-			else
-				return GT_OP;
+		// Added section here: start
+		else if (currentChar == '[')
+			return LSTAPLE;
+		else if (currentChar == ']')
+			return RSTAPLE;
+		else if (currentChar == '{')
+			return LMUSTACHE;
+		else if (currentChar == '}')
+			return RMUSTACHE;
+		// Added section here: end
 		else if (currentChar == '(')
 			return LBANANA;
 		else if (currentChar == ')')
@@ -178,37 +237,150 @@ Token Scanner::GetNextToken()
 			return SEMICOLON;
 		else if (currentChar == ',')
 			return COMMA;
-		else if (currentChar == '+') {
+		else if (currentChar == ':') {
+			return COLON;
+		}
+		else if (currentChar == '*') {
+			BufferChar(currentChar);
+			return MULT_OP;
+		}
+		else if (currentChar == '/') {
+			BufferChar(currentChar);
+			return DIV_OP;
+		}
+		else if (currentChar == '+')
+		{
 			BufferChar(currentChar);
 			return PLUS_OP;
 		}
-		else if (currentChar == '=')
-			if (sourceFile.peek() == '=') {                 // == operator
+		else if (currentChar == '<')
+		{
+			if (sourceFile.peek() == '=')
+			{                             // := operator
+				BufferChar(currentChar);
 				currentChar = NextChar();
-				return EQ_OP1;
+				BufferChar(currentChar);
+				return LE_OP;
 			}
-			else
-				return ASSIGN_OP;
-		else if (currentChar == '!')
-			if (sourceFile.peek() == '!') {	// !! operator
+			else {
+				BufferChar(currentChar);
+				return LT_OP;
+			}
+		}
+		else if (currentChar == '>')
+		{
+			if (sourceFile.peek() == '=')
+			{                             // := operator
+				BufferChar(currentChar);
 				currentChar = NextChar();
+				BufferChar(currentChar);
+				return GE_OP;
+			}
+			else {
+				BufferChar(currentChar);
+				return GT_OP;
+			}
+		}
+		else if (currentChar == '!')
+		{
+			if (sourceFile.peek() == '!')
+			{                             // := operator
+				BufferChar(currentChar);
+				currentChar = NextChar();
+				BufferChar(currentChar);
 				return EQ_OP2;
 			}
-			else if (sourceFile.peek() == '=') {// != operator
+			else if (sourceFile.peek() == '='){
+				BufferChar(currentChar);
 				currentChar = NextChar();
+				BufferChar(currentChar);
 				return NE_OP;
 			}
-			else
+			else {
 				LexicalError(currentChar);
-		else if (currentChar == '/')  
-			if (sourceFile.peek() == '/') // comment
+			}
+		}
+		else if (currentChar == 'F' || currentChar == 'T')
+		{
+			if (sourceFile.peek() == 'A')
+			{                             // := operator
+				BufferChar(currentChar);
+				currentChar = NextChar();
+				BufferChar(currentChar);
+				if (sourceFile.peek() == 'L') {
+					BufferChar(currentChar);
+					currentChar = NextChar();
+					BufferChar(currentChar);
+					if (sourceFile.peek() == 'S') {
+						BufferChar(currentChar);
+						currentChar = NextChar();
+						BufferChar(currentChar);
+						if (sourceFile.peek() == 'E') {
+							BufferChar(currentChar);
+							currentChar = NextChar();
+							BufferChar(currentChar);
+							return BOOL_LIT;
+						}
+						else {
+							LexicalError(currentChar);
+						}
+					}
+					else {
+						LexicalError(currentChar);
+					}
+				}
+				else {
+					LexicalError(currentChar);
+				}
+			}
+			else if (sourceFile.peek() == 'R'){
+				BufferChar(currentChar);
+				currentChar = NextChar();
+				BufferChar(currentChar);
+				if (sourceFile.peek() == 'U') {
+					BufferChar(currentChar);
+					currentChar = NextChar();
+					BufferChar(currentChar);
+					if (sourceFile.peek() == 'E') {
+						BufferChar(currentChar);
+						currentChar = NextChar();
+						BufferChar(currentChar);
+						return BOOL_LIT;
+					}
+					else {
+						LexicalError(currentChar);
+					}
+				}
+				else {
+					LexicalError(currentChar);
+				}
+			}
+			else {
+				LexicalError(currentChar);
+			}
+		}
+		else if (currentChar == '=')
+		{
+			if (sourceFile.peek() == '=')
+			{                             // := operator
+				BufferChar(currentChar);
+				currentChar = NextChar();
+				BufferChar(currentChar);
+				return EQ_OP1;
+			}
+			else {
+				return ASSIGN_OP;
+			}
+		}
+		else if (currentChar == '-')  
+			if (sourceFile.peek() == '-') // comment
 				do  // skip comment
 					currentChar = NextChar();
 				while (currentChar != '\n');
 			else
 			{
-				BufferChar(currentChar);      // division operator
-				return DIV_OP;
+				BufferChar(currentChar);      // minus operator
+				return MINUS_OP;
 			}
 		else if (currentChar == '"')		// string character
 			do {

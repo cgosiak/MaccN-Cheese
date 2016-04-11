@@ -22,60 +22,77 @@
 #define SCANNER
 #include <string>
 
-extern ifstream sourceFile;
-
 const int ID_STRING_LEN = 32;
 
-enum Token {
-	EOF_SYM, 
-	BOOL_SYM, 
-	BREAK_SYM,
-	CASE_SYM,
-	CHEESE_SYM,
-	DECS_SYM,
-	DO_SYM,
-	ELSE_SYM,
-	END_SYM,
-	FALSE_SYM,
-	FLOAT_SYM,
-	FOR_SYM,
-	HIPHIP_SYM,
-	IF_SYM,
-	INT_SYM,
-	LISTEN_SYM,
-	OTHERWISE_SYM,
-	SELECT_SYM,
-	SHOUT_SYM,
-	THEN_SYM,
-	TRUE_SYM,
-	WHILE_SYM,
-	UNTIL_SYM,
-	LSTAPLE,
-	RSTAPLE,
-	LBANANA,
-	RBANANA,
-	LMUSTACHE,
-	RMUSTACHE,
-	COLON,
-	SEMICOLON,
-	COMMA,
-	ASSIGN_OP,
-	PLUS_OP,
-	MINUS_OP,
-	MULT_OP,
-	DIV_OP,
-	LT_OP,
-	LE_OP,
-	GT_OP,
-	GE_OP,
-	EQ_OP1,
-	EQ_OP2,
-	NE_OP,
-	ID,
-	INT_LIT,
-	FLOAT_LIT,
-	CHEESE_LIT
-};
+// *******************
+// **     Tokens    **
+// *******************
+//RESERVED WORD		  TOKEN             NAMING CONVENTION		SCANNER DONE
+//"$eof$"             EOF_SYM.			-Done					-Done
+//"bool"              BOOL_SYM.			-Done					-Done
+//"break"             BREAK_SYM.		-Done					-Done
+//"case"              CASE_SYM.			-Done					-Done
+//"cheese"            CHEESE_SYM.		-Done					-Done
+//"decs"              DECS_SYM.			-Done					-Done
+//"do"                DO_SYM.			-Done					-Done
+//"else"              ELSE_SYM.			-Done					-Done
+//"end"               END_SYM.			-Done					-Done
+//"false"             FALSE_SYM.		-Done					-Done
+//"float"             FLOAT_SYM.		-Done					-Done
+//"for"               FOR_SYM.			-Done					-Done
+//"hiphip"            HIPHIP_SYM.		-Done					-Done
+//"if"                IF_SYM.			-Done					-Done
+//"int"               INT_SYM.			-Done					-Done
+//"listen"            LISTEN_SYM.		-Done					-Done
+//"otherwise"         OTHERWISE_SYM.	-Done					-Done
+//"select"            SELECT_SYM.		-Done					-Done
+//"shout"             SHOUT_SYM.		-Done					-Done
+//"then"              THEN_SYM.			-Done					-Done
+//"true"              TRUE_SYM.			-Done					-Done
+//"while"             WHILE_SYM.		-Done					-Done
+//"["                 LSTAPLE.			-Done					-Done
+//"]"                 RSTAPLE.			-Done					-Done
+//"("                 LBANANA.			-Done					-Done
+//")"                 RBANANA.			-Done					-Done
+//"{"                 LMUSTACHE.		-Done					-Done
+//"}"                 RMUSTACHE.		-Done					-Done
+//":"                 COLON.			-Done					-Done
+//";"                 SEMICOLON.		-Done					-Done
+//","                 COMMA.			-Done					-Done
+//"="                 ASSIGN_OP.		-Done					-Done
+//"+"                 PLUS_OP.			-Done					-Done
+//"-"                 MINUS_OP.			-Done					-Done
+//"*"                 MULT_OP.			-Done					-Done
+//"/"                 DIV_OP.			-Done					-Done
+//"<"                 LT_OP.			-Done					-Done
+//"<="                LE_OP.			-Done					-Done
+//">"                 GT_OP.			-Done					-Done
+//">="                GE_OP.			-Done					-Done
+//"=="                EQ_OP1.			-Done					-Done
+//"!!"                EQ_OP2.			-Done					-Done
+//"!="                NE_OP.			-Done					-Done
+//"ID"                ID.				-Done					-Done
+//"BOOL_LIT"          BOOL_LIT.			-Done					-Done
+//"INT_LIT"           INT_LIT.			-Done					-Done
+//"FLOAT_LIT"         FLOAT_LIT.		-Done					-Done
+//"CHEESE_LIT"        CHEESE_LIT.		-Done					-Done
+
+/*
+enum Token  { BEGIN_SYM, END_SYM, EOF_SYM,
+				LISTEN_SYM, SHOUT_SYM,
+				LPAREN, RPAREN, SEMICOLON, COMMA,
+				ASSIGN_OP, PLUS_OP, MINUS_OP,
+				ID, INT_LITERAL, CHEESE_LITERAL };
+*/
+enum Token  { EOF_SYM,BOOL_SYM,BREAK_SYM,CASE_SYM,
+	CHEESE_SYM,DECS_SYM,DO_SYM,ELSE_SYM,END_SYM,
+	FALSE_SYM,FLOAT_SYM,FOR_SYM,HIPHIP_SYM,IF_SYM,
+	INT_SYM,LISTEN_SYM,OTHERWISE_SYM,SELECT_SYM,SHOUT_SYM,
+	THEN_SYM,TRUE_SYM,WHILE_SYM,LSTAPLE,RSTAPLE,
+	LBANANA,RBANANA,LMUSTACHE,RMUSTACHE,COLON,
+	SEMICOLON,COMMA,ASSIGN_OP,PLUS_OP,MINUS_OP,MULT_OP,
+	DIV_OP,LT_OP,LE_OP,GT_OP,GE_OP,EQ_OP1,EQ_OP2,
+	NE_OP,ID,BOOL_LIT,INT_LIT,FLOAT_LIT,CHEESE_LIT};
 
 class Scanner
 {

@@ -7,6 +7,7 @@
 
 #include <string>
 
+// TODO: Update these data types!!!! BOOL_LIT.....
 enum DataTypes  { TYPE_BOOL, TYPE_CHEESE, TYPE_INT, TYPE_FLOAT, TYPE_NONE};
 
 class DataEntry {

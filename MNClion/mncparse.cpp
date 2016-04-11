@@ -11,13 +11,7 @@ using namespace std;
 #include "mncparse.h"
 #include "mnccode.h"
 #include "mncscan.h"
-
-
-
-
-
-
-
+#include "SymbolTable.h"
 
 
 #pragma region gettokentext
@@ -92,13 +86,9 @@ std::string getTokenText(int token) {
 
 
 
-
-
-
-
-
 extern CodeGen code;
 extern Scanner scan;
+extern SymbolTable symbolTable;
 
 Parser::Parser()
 {
@@ -189,20 +179,29 @@ void Parser::DecTail()
 	}
 }
 
+// GLOBAL VARIABLE THAT KEEPS TRACK OF TYPE
+DataTypes current_assigned_type;
+
 void Parser::Declaration()
 {
 	switch (NextToken())
 	{
 	case BOOL_SYM:
+        current_assigned_type = BOOL_LIT;
 	case CHEESE_SYM:
+        current_assigned_type = CHEESE_LIT;
 	case FLOAT_SYM:
+        current_assigned_type = FLOAT_LIT;
 	case INT_SYM:
+        current_assigned_type = INT_LIT;
 		Type();
 		Match(COLON);
 		VarDecList();
 		Match(SEMICOLON);
 		break;
-	case HIPHIP_SYM:
+        case HIPHIP_SYM:
+        // Todo: Fix this!
+        // current_assigned_type = ;
 		Match(HIPHIP_SYM);
 		Match(LSTAPLE);
 		Match(INT_LIT);
