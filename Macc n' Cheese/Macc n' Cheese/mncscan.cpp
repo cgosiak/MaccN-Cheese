@@ -137,13 +137,24 @@ Token Scanner::GetNextToken()
 			}
 			return CheckReserved();
 		}
-		else if (isdigit(currentChar)) {                                // integer literal
+		else if (isdigit(currentChar) || currentChar == '.') {                // integer literal
 			BufferChar(currentChar);
 			c = sourceFile.peek();
-			while (isdigit(c)) {
+			while (isdigit(c) || c == '.') {
 				currentChar = NextChar();
 				BufferChar(currentChar);
 				c = sourceFile.peek();
+				if (currentChar == '.') {
+					currentChar = NextChar();
+					BufferChar(currentChar);
+					c = sourceFile.peek();
+					while (isdigit(c)) {
+						currentChar = NextChar();
+						BufferChar(currentChar);
+						c = sourceFile.peek();
+					}
+					return FLOAT_LIT;					
+				}
 			}
 			return INT_LIT;
 		}

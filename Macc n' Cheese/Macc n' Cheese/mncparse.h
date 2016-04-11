@@ -57,7 +57,7 @@ private:
 
 	void MultOp();
 
-	void FactorTail();
+	void FactorTail();// ExprRec& expr);
 
 	void Primary();
 
@@ -65,7 +65,7 @@ private:
 
 	void ExprTail();
 
-	void Factor();
+	void Factor();// ExprRec& expr);
 
 	void RelOp();
 
@@ -99,9 +99,9 @@ private:
 
 	void IfStmt();
 
-	void ItemListTail();
+	void ItemListTail(ExprRec& expr);
 
-	void ItemList();
+	void ItemList();// ExprRec& expr);
 
 	void VariableTail();
 
@@ -111,7 +111,7 @@ private:
 
 	void InitList();
 
-	void Expression();
+	void Expression();//ExprRec& expr);
 
 	void AssignTail();
 
@@ -119,7 +119,7 @@ private:
 
 	void BreakStmt();
 
-	void ShoutStmt();
+	void ShoutStmt(const ExprRec& expr);
 
 	void ListenStmt();
 
@@ -127,7 +127,7 @@ private:
 
 	void StructStmt();
 
-	void SimpleStmt();
+	void SimpleStmt(const ExprRec& expr);
 
 	void StmtTail();
 

@@ -22,6 +22,8 @@ struct ExprRec // information about a constant, variable, or
 	ExprKind kind;   // operand type
 	string   name;   // used when kind is ID_EXPR or TEMP_EXPR
 	int      val;    // used when kind is LITERAL_EXPR
+	string	 sval;	 // used when kind is CHEESE_LITERAL
+	float	 fval;   // used when kind is FLOAT_LITERAL
 };
 
 class CodeGen {
@@ -51,7 +53,7 @@ class CodeGen {
 	void NewLine();
 	// Produces the assembly code for starting a new output line.
 
-	void Shout(ExprRec& e1);
+	void Shout(ExprRec& e);
 
 	void IfThen();
 

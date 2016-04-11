@@ -191,10 +191,22 @@ void CodeGen::Finish()
 }
 
 void CodeGen::Shout(ExprRec& e) {
-	e.val = atoi(scan.tokenBuffer.data());
-
 	string s;
-	IntToAlpha(e.val, s);
+
+	switch (e.kind) {
+		case CHEESE_LIT:
+			e.sval = scan.stringBuffer;
+			IntToAlpha(e.val, s);
+			break;
+		case INT_LIT:
+			e.val = atoi(scan.tokenBuffer.data());
+			IntToAlpha(e.val, s);
+			break;
+		case FLOAT_LIT:
+		//	e.fval = ;
+			IntToAlpha(atof(scan.tokenBuffer.data()), s);
+			break;
+	}
 
 	Generate("WRI       ", s, "");	
 }

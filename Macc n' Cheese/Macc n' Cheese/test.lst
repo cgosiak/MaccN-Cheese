@@ -9,26 +9,8 @@
 				the MACC2 virtual computer.
  _______________________________________________________________
 
- March 30, 2016 at 09:06 AM
+ April 01, 2016 at 09:03 AM
  Source file: test.mnc
 
  LINE #
                     LDA       R15,VARS
-                    WRI       0
-                    WRI       0
-                    WRI       0
-     1  shout 0, 1, 2;Ì
-                    HALT      
-                    LABEL     VARS
-                    SKIP      2
-
-
- _____________________________________________
- <><><><>   S Y M B O L   T A B L E   <><><><>
-
- Relative
- Address      Identifier
- --------     --------------------------------
- _____________________________________________
-
- Normal successful compilation.
