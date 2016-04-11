@@ -5,6 +5,7 @@
 #include <iostream>
 #include "DataEntry.h"
 #include <algorithm>
+#include <sstream>
 
 DataEntry::DataEntry(std::string id, DataTypes type, std::string label_name) {
     variable_name = id;
@@ -16,34 +17,39 @@ void DataEntry::AssignValue(std::string val) {
 
     // Need to have case statement here to make sure assignment matches type
     switch (entry_type) {
-        case TYPE_INT:
+        case INT_LIT:
             if (DataEntry::isInt(val)) {
                 value = val;
+                data_line = "INT   0";
             }
             else {
-                DataEntry::RaiseError_Assignment(val, "TYPE_INT");
+                DataEntry::RaiseError_Assignment(val, "INT_LIT");
             }
             break;
-        case TYPE_BOOL:
+        case BOOL_LIT:
             if (DataEntry::isBool(val)) {
                 value = DataEntry::UpperCase(val);
+                data_line = "INT   0";
             }
             else {
-                DataEntry::RaiseError_Assignment(val, "TYPE_BOOL");
+                DataEntry::RaiseError_Assignment(val, "BOOL_LIT");
             }
             break;
-        case TYPE_CHEESE:
+        case CHEESE_LIT:
             // should technically never be an error, any grouping of characters can be viewed as a string
-            //DataEntry::RaiseError_Assignment(val, TYPE_CHEESE);
+            //DataEntry::RaiseError_Assignment(val, CHEESE_LIT);
             value = val;
+            data_line = "STRING   \"\"";
             break;
-        case TYPE_FLOAT:
-            DataEntry::RaiseError_Assignment(val, "TYPE_FLOAT");
+        case FLOAT_LIT:
+            DataEntry::RaiseError_Assignment(val, "FLOAT_LIT");
+            data_line = "REAL   0.0";
             break;
         default:
             DataEntry::RaiseError_Assignment(val, "TYPE_NONE");
             break;
     }
+    entry_used = true;
 }
 
 DataTypes DataEntry::GetType() {
@@ -60,6 +66,7 @@ std::string DataEntry::GetID() {
 
 void DataEntry::RaiseError_Assignment(std::string in, std::string t) {
     std::cout << "Assignment Error: Cannot assign value " << in << " to type " << t << std::endl;
+    exit(1); // exit and end program
 }
 
 bool DataEntry::isInt(const std::string &s) {
@@ -90,4 +97,16 @@ std::string DataEntry::UpperCase(std::string sr) {
 
 std::string DataEntry::GetDataLabel() {
     return label_value;
+}
+
+bool DataEntry::WasUsed() {
+    return entry_used;
+}
+
+std::string DataEntry::GetDataLine() {
+    return data_line;
+}
+
+bool DataEntry::isReal(const std::string &s) {
+    std::string test = "";
 }

@@ -23,6 +23,8 @@ public:
 
     DataEntry GetDataObject(std::string id); // returns the data entry object
 
+    std::string FinishSymbolTable(); // Returns a string to write the symbol table to the output assembly file
+
 private:
     int total_entries = 0; // Current amount of stored data entries
 

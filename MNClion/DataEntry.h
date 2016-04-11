@@ -7,8 +7,7 @@
 
 #include <string>
 
-// TODO: Update these data types!!!! BOOL_LIT.....
-enum DataTypes  { TYPE_BOOL, TYPE_CHEESE, TYPE_INT, TYPE_FLOAT, TYPE_NONE};
+enum DataTypes  { BOOL_LIT, CHEESE_LIT, INT_LIT, FLOAT_LIT, TYPE_NONE};
 
 class DataEntry {
 
@@ -27,10 +26,17 @@ public:
 
     std::string GetDataLabel(); // return label name for assembly file
 
+    bool WasUsed(); // basic method to return whether or not the variable was ever used
+
+    std::string GetDataLine(); // return string for representing data in assembly
+
 private:
     DataTypes entry_type; // the type of the variable
 
     bool entry_used = false; // Test of whether the variable was ever assigned a value
+
+    // Data line, for data section in assembly
+    std::string data_line;
 
     // Name of variable
     std::string variable_name;
@@ -45,6 +51,8 @@ private:
     bool isInt(const std::string & s); // checks if the string passed is of type int
 
     bool isBool(const std::string & s); // checks if the string passed is a valid bool
+
+    bool isReal(const std::string &s); // checks if string is real
 
     // Type conversion
     std::string UpperCase(std::string s); // upper cases a string, returns upper cased string

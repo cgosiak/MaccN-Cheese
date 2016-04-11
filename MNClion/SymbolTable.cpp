@@ -73,3 +73,15 @@ DataEntry SymbolTable::GetDataObject(std::string id) {
     return *pointed_object;
 }
 
+std::string SymbolTable::FinishSymbolTable() {
+    std::string symbol_table = "% Data Area ------------\n% ----------------------\n";
+
+    for (int i = 0; i < total_entries; ++i) {
+        if (table_entries[i].WasUsed()) {
+            // Add entry to finished symbol table
+            symbol_table = symbol_table + "LABEL    " + table_entries[i].GetDataLabel() + "\n" + table_entries[i].GetDataLine() + "\n";
+        }
+    }
+
+    return symbol_table;
+}
