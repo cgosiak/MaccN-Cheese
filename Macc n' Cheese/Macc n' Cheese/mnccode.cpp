@@ -191,6 +191,7 @@ void CodeGen::Finish()
 }
 
 void CodeGen::Shout(ExprRec& e) {
+<<<<<<< HEAD
 	string s;
 
 	switch (e.kind) {
@@ -208,7 +209,28 @@ void CodeGen::Shout(ExprRec& e) {
 			break;
 	}
 
+=======
+	
+	string s;
+	
+	switch (e.kind) {
+	case CHEESE_LIT:
+		e.val = scan.stringBuffer.data();
+		s = e.val;
+		break;
+	case INT_LIT:
+	case FLOAT_LIT:
+		e.val = scan.tokenBuffer.data();
+		IntToAlpha(e.val, s);
+		break;
+	}
+	
+>>>>>>> e003e520248df6e8cf9498964bda5cac53512a8a
 	Generate("WRI       ", s, "");	
+}
+
+void CodeGen::Listen(ExprRec& e) {
+
 }
 
 void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, 
