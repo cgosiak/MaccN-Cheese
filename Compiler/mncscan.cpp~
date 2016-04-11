@@ -48,7 +48,7 @@ extern ofstream outFile, listFile;
 //"if"                IF_SYM.			-Done					-Done
 //"int"               INT_SYM.			-Done					-Done
 //"listen"            LISTEN_SYM.		-Done					-Done
-//"otherwise"         OTHERWISE_SYM.		-Done					-Done
+//"otherwise"         OTHERWISE_SYM.	-Done					-Done
 //"select"            SELECT_SYM.		-Done					-Done
 //"shout"             SHOUT_SYM.		-Done					-Done
 //"then"              THEN_SYM.			-Done					-Done
@@ -75,7 +75,7 @@ extern ofstream outFile, listFile;
 //"=="                EQ_OP1.			-Done					-Done
 //"!!"                EQ_OP2.			-Done					-Done
 //"!="                NE_OP.			-Done					-Done
-//"ID"                ID.			-Done					-Done
+//"ID"                ID.				-Done					-Done
 //"BOOL_LIT"          BOOL_LIT.			-Done					-Done
 //"INT_LIT"           INT_LIT.			-Done					-Done
 //"FLOAT_LIT"         FLOAT_LIT.		-Done					-Done
