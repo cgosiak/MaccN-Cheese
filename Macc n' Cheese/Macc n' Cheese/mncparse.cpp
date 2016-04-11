@@ -657,6 +657,7 @@ void Parser::ItemListTail()
 	{
 	case COMMA:
 		Match(COMMA);
+		NextToken();
 		Expression();
 		code.Shout(expr);
 		ItemListTail();
@@ -787,7 +788,7 @@ void Parser::ShoutStmt()
 {
 	Match(SHOUT_SYM);
 	ItemList();
-	// code.NewLine();
+	code.NewLine();
 	Match(SEMICOLON);
 }
 
