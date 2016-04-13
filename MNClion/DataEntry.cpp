@@ -42,7 +42,7 @@ void DataEntry::AssignValue(std::string val) {
             data_line = "STRING   \"\"";
             break;
         case FLOAT_LIT:
-            DataEntry::RaiseError_Assignment(val, "FLOAT_LIT");
+            // DataEntry::RaiseError_Assignment(val, "FLOAT_LIT");
             data_line = "REAL   0.0";
             break;
         default:
@@ -109,4 +109,5 @@ std::string DataEntry::GetDataLine() {
 
 bool DataEntry::isReal(const std::string &s) {
     std::string test = "";
+    return true;
 }

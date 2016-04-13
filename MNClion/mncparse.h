@@ -59,7 +59,7 @@ private:
 
 	void FactorTail();
 
-	void Primary();
+	void Primary(ExprRec& result);
 
 	void AddOp();
 
