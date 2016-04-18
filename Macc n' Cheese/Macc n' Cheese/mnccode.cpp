@@ -80,7 +80,11 @@ string CodeGen::ExtractOp(const OpRec & o)
 {
 	if (o.op == PLUS)
 		return "IA        ";
-	else
+	else if(o.op == MINUS)
+		return "IS        ";
+	else if(o.op == MULT)
+		return "IS        ";
+	else if (o.op == DIVN)
 		return "IS        ";
 }
 
@@ -191,47 +195,47 @@ void CodeGen::Finish()
 }
 
 void CodeGen::Shout(ExprRec& e) {
-<<<<<<< HEAD
-	string s;
-
-	switch (e.kind) {
-		case CHEESE_LIT:
-			e.sval = scan.stringBuffer;
-			IntToAlpha(e.val, s);
-			break;
-		case INT_LIT:
-			e.val = atoi(scan.tokenBuffer.data());
-			IntToAlpha(e.val, s);
-			break;
-		case FLOAT_LIT:
-		//	e.fval = ;
-			IntToAlpha(atof(scan.tokenBuffer.data()), s);
-			break;
-	}
-
-=======
-	
-	string s;
-	
+	string s = "";
 	switch (e.kind) {
 	case CHEESE_LIT:
-		e.val = scan.stringBuffer.data();
-		s = e.val;
-		break;
-	case INT_LIT:
-	case FLOAT_LIT:
-		e.val = scan.tokenBuffer.data();
+		e.sval = scan.stringBuffer;
 		IntToAlpha(e.val, s);
 		break;
+	case INT_LIT:
+		e.val = atoi(scan.tokenBuffer.data());
+		IntToAlpha(e.val, s);
+		break;
+	case FLOAT_LIT:
+		e.fval = atof(scan.tokenBuffer.data());
+		s = scan.tokenBuffer;
+		break;
 	}
-	
->>>>>>> e003e520248df6e8cf9498964bda5cac53512a8a
+
 	Generate("WRI       ", s, "");	
 }
 
 void CodeGen::Listen(ExprRec& e) {
 
+	switch (e.kind) {
+	case CHEESE_LIT:
+		Generate("RDST       ", e.name, "");
+		break;
+	case INT_LIT:
+		Generate("RDI       ", "*R4", "");
+		Generate("STO       ", e.name, "*R4");
+		break;
+	case FLOAT_LIT:
+		Generate("RDF       ", "*R4", "");
+		Generate("STO       ", e.name, "*R4");
+		break;
+	}
 }
+
+void CodeGen::ProcessVar(ExprRec& e) {
+	Generate("LA       ", "R4", e.name);
+}
+
+void CodeGen::setCondition(){}
 
 void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, 
                        const ExprRec & e2, ExprRec& e)
@@ -248,6 +252,13 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op,
 			break;
 		case MINUS:
 			e.val = e1.val - e2.val;
+			break;
+		case MULT:
+			e.val = e1.val * e2.val;
+			break;
+		case DIVN:
+			e.val = e1.val / e2.val;
+			break;
 		}
 	}
 	else
@@ -285,8 +296,12 @@ void CodeGen::ProcessOp(OpRec& o)
 {
 	if (scan.tokenBuffer == "+")
 		o.op = PLUS;
-	else
+	else if (scan.tokenBuffer == "-")
 		o.op = MINUS;
+	else if (scan.tokenBuffer == "*")
+		o.op = MULT;
+	else if (scan.tokenBuffer == "/")
+		o.op = DIVN;
 }
 
 void CodeGen::ReadId(const ExprRec & inVar)

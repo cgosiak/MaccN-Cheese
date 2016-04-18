@@ -41,12 +41,12 @@ class CodeGen {
 	void Finish();
 	// Generates code to finish the program.
 
-	void ProcessVar();
+	void ProcessVar(ExprRec& e);
 
 	void Assign(const ExprRec & target, const ExprRec & source);
 	// Produces the assembly code for an assignment from Source to Target.
 
-	void Listen();
+	void Listen(ExprRec& e);
 
 	void Break();
 
@@ -54,6 +54,8 @@ class CodeGen {
 	// Produces the assembly code for starting a new output line.
 
 	void Shout(ExprRec& e);
+
+	void setCondition();
 
 	void IfThen();
 
@@ -69,12 +71,9 @@ class CodeGen {
 
 	void WhileEnd();
 
-
 	void GenInfix(const ExprRec & e1, const OpRec & op,
 		const ExprRec & e2, ExprRec& e);
 	// Produces the assembly code for an infix operation.
-
-
 
 	void ProcessId(ExprRec& e);
 	// Declares the identifier in the token buffer and builds a
@@ -90,8 +89,6 @@ class CodeGen {
 
 	void ReadId(const ExprRec & InVar);
 	// Produces the assembly code for reading a value for InVar.
-
-
 
 	void WriteExpr(const ExprRec & OutExpr);
 	// Produces the assembly code for writing the value of OutExpr.

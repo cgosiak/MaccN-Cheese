@@ -71,7 +71,6 @@ void Parser::Match(Token t)
 		tokenAvailable = false;
 }
 
-
 void Parser::InitTail()
 {
 	switch (NextToken())
@@ -262,14 +261,16 @@ void Parser::MultOp()
 
 void Parser::FactorTail()//ExprRec& expr)
 {
+	OpRec op;
+	ExprRec e1, e2, e3;
 	switch (NextToken())
 	{
 	case MULT_OP:
 	case DIV_OP:
 		MultOp();
-		// code.ProcessOp();
+		code.ProcessOp(op);
 		Primary();
-		// code.GenInfix();
+		code.GenInfix(e1, op, e2, e3);
 		FactorTail();
 		break;
 	case RSTAPLE:
@@ -294,6 +295,8 @@ void Parser::FactorTail()//ExprRec& expr)
 
 void Parser::Primary()
 {
+	ExprRec e;
+
 	switch (NextToken())
 	{
 	case FALSE_SYM:
@@ -302,14 +305,12 @@ void Parser::Primary()
 	case FLOAT_LIT:
 	case CHEESE_LIT:{
 		Literal();
-
-		ExprRec e;
 		code.ProcessLiteral(e);
 		break;
 	}
 	case ID:
 		Variable();
-		// code.ProcessVar();
+		code.ProcessVar(e);
 		break;
 	case LBANANA:
 		Match(LBANANA);
@@ -366,10 +367,10 @@ void Parser::ExprTail()
 	}
 }
 
-void Parser::Factor()// ExprRec& expr)
+void Parser::Factor()
 {
-	Primary(/*expr*/);
-	FactorTail(/*expr*/);
+	Primary();
+	FactorTail();
 }
 
 void Parser::RelOp()
@@ -404,6 +405,8 @@ void Parser::RelOp()
 
 void Parser::CondTail()
 {
+	OpRec op;
+
 	switch (NextToken())
 	{
 	case LT_OP:
@@ -414,7 +417,7 @@ void Parser::CondTail()
 	case EQ_OP2:
 	case NE_OP:
 		RelOp();
-		// code.ProcessOp();
+		code.ProcessOp(op);
 		Expression();
 		break;
 	case RBANANA:
@@ -667,11 +670,11 @@ void Parser::VarListTail()
 	}
 }
 
-void Parser::VarList()
+void Parser::VarList(ExprRec& expr)
 {
 	Variable();
-	// code.ProcessVar();
-	// code.Listen();
+	code.ProcessVar(expr);
+	code.Listen(expr);
 	VarListTail();
 }
 
@@ -723,7 +726,7 @@ void Parser::BreakStmt()
 	Match(SEMICOLON);
 }
 
-void Parser::ShoutStmt(const ExprRec& expr)
+void Parser::ShoutStmt(ExprRec& expr)
 {
 	Match(SHOUT_SYM);
 	ItemList(/*expr*/);
@@ -731,10 +734,10 @@ void Parser::ShoutStmt(const ExprRec& expr)
 	Match(SEMICOLON);
 }
 
-void Parser::ListenStmt()
+void Parser::ListenStmt(ExprRec& expr)
 {
 	Match(LISTEN_SYM);
-	VarList();
+	VarList(expr);
 	Match(SEMICOLON);
 }
 
@@ -775,7 +778,7 @@ void Parser::StructStmt()
 	}
 }
 
-void Parser::SimpleStmt(const ExprRec& expr)
+void Parser::SimpleStmt(ExprRec& expr)
 {
 	switch (NextToken())
 	{
@@ -783,7 +786,7 @@ void Parser::SimpleStmt(const ExprRec& expr)
 		AssignStmt();
 		break;
 	case LISTEN_SYM:
-		ListenStmt();
+		ListenStmt(expr);
 		break;
 	case SHOUT_SYM:
 		ShoutStmt(expr);
