@@ -195,22 +195,25 @@ void CodeGen::Finish()
 }
 
 void CodeGen::Shout(ExprRec& e) {
-	string s = "";
-	switch (e.kind) {
-	case CHEESE_LIT:
-		e.sval = scan.stringBuffer;
-		IntToAlpha(e.val, s);
-		break;
-	case INT_LIT:
-		e.val = atoi(scan.tokenBuffer.data());
-		IntToAlpha(e.val, s);
-		break;
-	case FLOAT_LIT:
-		e.fval = atof(scan.tokenBuffer.data());
-		s = scan.tokenBuffer;
-		break;
-	}
+	string s;
 
+	switch (e.type) {
+		case CHEESE:
+			e.sval = scan.stringBuffer;
+			IntToAlpha(e.val, s);
+			break;
+		case INT:
+			e.val = atoi(scan.tokenBuffer.data());
+			IntToAlpha(e.val, s);
+			break;
+		case FLOAT:
+			IntToAlpha(atof(scan.tokenBuffer.data()), s);
+			break;
+		case BOOL:
+			//TODO shout: bool
+			break;
+	}
+	
 	Generate("WRI       ", s, "");	
 }
 
@@ -330,4 +333,92 @@ void CodeGen::WriteString()
 	string s;
 	s = scan.tokenBuffer.data();
 	Generate("WRST      ", s, "");
+}
+
+void CodeGen::DefineVar(ExprRec& var) {
+	string name = scan.tokenBuffer;
+
+	if (LookUp(name)) {
+		//TODO error variable name already declared
+	}
+	else {
+		var.name = name;
+		Enter(name);
+	}
+}
+
+void CodeGen::ProcessVar() {
+	//TODO CodeGen::ProcessVar()
+}
+
+void CodeGen::IntAppend() {
+	//TODO CodeGen::IntAppend()
+}
+
+void CodeGen::CaseEnd() {
+	//TODO CodeGen::CaseEnd()
+}
+
+void CodeGen::ForAssign() {
+	//TODO CodeGen::ForAssign()
+}
+
+void CodeGen::SetCondition(const ExprRec& e1, const OpRec& op, const ExprRec& e2, ExprRec& e) {
+	//TODO CodeGen::SetCondition(const ExprRec& e1, const OpRec& op, const ExprRec& e2, ExprRec& e)
+}
+
+void CodeGen::SelectBegin() {
+	//TODO CodeGen::SelectBegin()
+}
+
+void CodeGen::Otherwise() {
+	//TODO CodeGen::Otherwise() 
+}
+
+void CodeGen::SelectEnd() {
+	//TODO CodeGen::SelectEnd()
+}
+
+void CodeGen::ForBegin() {
+	//TODO CodeGen::ForBegin()
+}
+
+void CodeGen::ForUpdate() {
+	//TODO CodeGen::ForUpdate()
+}
+
+void CodeGen::ForEnd() {
+	//TODO CodeGen::ForEnd()
+}
+
+void CodeGen::Break() {
+	//TODO CodeGen::Break()
+}
+
+void CodeGen::IfThen() {
+	//TODO CodeGen::IfThen()
+}
+
+void CodeGen::IfElse() {
+	//TODO CodeGen::IfElse()
+}
+
+void CodeGen::IfEnd() {
+	//TODO CodeGen::IfEnd()
+}
+
+void CodeGen::LoopBegin() {
+	//TODO CodeGen::LoopBegin()
+}
+
+void CodeGen::LoopEnd() {
+	//TODO CodeGen::LoopEnd()
+}
+
+void CodeGen::WhileBegin() {
+	//TODO CodeGen::WhileBegin()
+}
+
+void CodeGen::WhileEnd() {
+	//TODO CodeGen::WhileEnd()
 }

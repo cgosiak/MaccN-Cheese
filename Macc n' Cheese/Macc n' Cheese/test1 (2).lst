@@ -9,8 +9,16 @@
 				the MACC2 virtual computer.
  _______________________________________________________________
 
+<<<<<<< HEAD
  April 11, 2016 at 05:47 PM
+=======
+ April 13, 2016 at 10:45 AM
+>>>>>>> b3b6d6f029a218ee4e259952ad4e94202bf18327
  Source file: test1 (2).mnc
 
  LINE #
                     LDA       R15,VARS
+<<<<<<< HEAD
+=======
+                    WRI       0
+>>>>>>> b3b6d6f029a218ee4e259952ad4e94202bf18327

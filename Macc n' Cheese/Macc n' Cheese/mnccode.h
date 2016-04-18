@@ -16,14 +16,17 @@ struct OpRec // information about an operator
 
 enum ExprKind { ID_EXPR, LITERAL_EXPR, TEMP_EXPR };
 
+enum VarKind { INT, FLOAT, CHEESE, BOOL };
+
 struct ExprRec // information about a constant, variable, or
 	// an intermediate (temporary) result
 {
 	ExprKind kind;   // operand type
+	VarKind	 type;	 // variable type
 	string   name;   // used when kind is ID_EXPR or TEMP_EXPR
-	int      val;    // used when kind is LITERAL_EXPR
-	string	 sval;	 // used when kind is CHEESE_LITERAL
-	float	 fval;   // used when kind is FLOAT_LITERAL
+	int      val;    // used when type is LITERAL_EXPR
+	string	 sval;	 // used when type is CHEESE
+	float	 fval;   // used when type is FLOAT
 };
 
 class CodeGen {
@@ -75,6 +78,8 @@ class CodeGen {
 		const ExprRec & e2, ExprRec& e);
 	// Produces the assembly code for an infix operation.
 
+	void DefineVar(ExprRec& e);
+
 	void ProcessId(ExprRec& e);
 	// Declares the identifier in the token buffer and builds a
 	// corresponding semantic record e.
@@ -94,6 +99,34 @@ class CodeGen {
 	// Produces the assembly code for writing the value of OutExpr.
 
 	void WriteString();
+
+	void ProcessVar();
+
+	void IntAppend();
+
+	void CaseEnd();
+
+	void ForAssign();
+
+	void SetCondition(const ExprRec& e1, const OpRec& op, const ExprRec& e2, ExprRec& e);
+
+	void SelectBegin();
+
+	void Otherwise();
+
+	void SelectEnd();
+
+	void ForBegin();
+
+	void ForUpdate();
+	
+	void ForEnd();
+
+
+
+
+
+
 
 	/* _____________________________________________________________________________
 	*/
