@@ -8,11 +8,19 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
 using namespace std;
 
 #include "mncparse.h"
 #include "mnccode.h"
 #include "mncscan.h"
+
+float str_to_float(string str) {
+	stringstream s(str);
+	float ret;
+	s >> ret;
+	return ret;
+}
 
 #pragma region gettokentext
 
@@ -324,12 +332,15 @@ void Parser::Primary(ExprRec& expr)
 				break;
 			case INT_LIT:
 				expr.type = INT;
+				expr.val = atoi(scan.tokenBuffer.data());
 				break;
 			case FLOAT_LIT:
 				expr.type = FLOAT;
+				expr.fval = str_to_float(scan.tokenBuffer);
 				break;
 			case CHEESE_LIT:
 				expr.type = CHEESE;
+				expr.sval = scan.stringBuffer;
 				break;
 		}
 

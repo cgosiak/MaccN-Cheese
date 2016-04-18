@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 using namespace std;
 
 extern ifstream sourceFile;
@@ -27,6 +28,12 @@ extern ofstream outFile, listFile;
 
 #include "mncscan.h"   // Scanner class definition
 #include "mnccode.h"
+
+string float_to_str(float f) {
+	stringstream ss;
+	ss << f;
+	return ss.str();
+}
 
 extern Scanner scan; // global Scanner object declared in micro.cpp
 
@@ -195,22 +202,21 @@ void CodeGen::Shout(ExprRec& e) {
 
 	switch (e.type) {
 		case CHEESE:
-			e.sval = scan.stringBuffer;
-			IntToAlpha(e.val, s);
+			s = e.sval;
+			Generate("WRST       ", s, "");
 			break;
 		case INT:
-			e.val = atoi(scan.tokenBuffer.data());
 			IntToAlpha(e.val, s);
+			Generate("WRI       ", s, "");
 			break;
 		case FLOAT:
-			IntToAlpha(atof(scan.tokenBuffer.data()), s);
+			s = float_to_str(e.fval);
+			Generate("WRF       ", s, "");
 			break;
 		case BOOL:
 			//TODO shout: bool
 			break;
-	}
-	
-	Generate("WRI       ", s, "");	
+	}	
 }
 
 void CodeGen::Listen() {
