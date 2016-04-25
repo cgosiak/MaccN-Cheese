@@ -78,6 +78,31 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s)
 		s = "+" + t + "(R15)";
 		break;
 	case LITERAL_EXPR:
+		switch (e.type) {
+			case BOOL:
+			case INT:{
+				IntToAlpha(e.val, t);
+				s = "#" + t;
+				break;
+			}
+			case CHEESE:{
+				s = e.sval;
+				break;
+			}
+			case FLOAT:{
+				s = e.name;
+				n = 0;
+				while (symbolTable[n] != s) n++;
+				k = 2 * n;  // offset: 2 bytes per variable
+				IntToAlpha(k, t);
+				s = "+" + t + "(R15)";
+				break;
+			}
+			default:{
+				//TODO print error
+				break;
+			}
+		}
 		IntToAlpha(e.val, t);
 		s = "#" + t;
 	}
@@ -87,7 +112,11 @@ string CodeGen::ExtractOp(const OpRec & o)
 {
 	if (o.op == PLUS)
 		return "IA        ";
-	else
+	else if(o.op == MINUS)
+		return "IS        ";
+	else if(o.op == MULT)
+		return "IS        ";
+	else if (o.op == DIVN)
 		return "IS        ";
 }
 
@@ -219,9 +248,28 @@ void CodeGen::Shout(ExprRec& e) {
 	}	
 }
 
-void CodeGen::Listen() {
+void CodeGen::Listen(ExprRec& e) {
 
+	switch (e.kind) {
+	case CHEESE_LIT:
+		Generate("RDST       ", e.name, "");
+		break;
+	case INT_LIT:
+		Generate("RDI       ", "*R4", "");
+		Generate("STO       ", e.name, "*R4");
+		break;
+	case FLOAT_LIT:
+		Generate("RDF       ", "*R4", "");
+		Generate("STO       ", e.name, "*R4");
+		break;
+	}
 }
+
+void CodeGen::ProcessVar(ExprRec& e) {
+	Generate("LA       ", "R4", e.name);
+}
+
+void CodeGen::setCondition(){}
 
 void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, 
                        const ExprRec & e2, ExprRec& e)
@@ -238,6 +286,13 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op,
 			break;
 		case MINUS:
 			e.val = e1.val - e2.val;
+			break;
+		case MULT:
+			e.val = e1.val * e2.val;
+			break;
+		case DIVN:
+			e.val = e1.val / e2.val;
+			break;
 		}
 	}
 	else
@@ -275,8 +330,12 @@ void CodeGen::ProcessOp(OpRec& o)
 {
 	if (scan.tokenBuffer == "+")
 		o.op = PLUS;
-	else
+	else if (scan.tokenBuffer == "-")
 		o.op = MINUS;
+	else if (scan.tokenBuffer == "*")
+		o.op = MULT;
+	else if (scan.tokenBuffer == "/")
+		o.op = DIVN;
 }
 
 void CodeGen::ReadId(const ExprRec & inVar)

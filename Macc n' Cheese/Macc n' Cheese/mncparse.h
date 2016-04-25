@@ -107,7 +107,7 @@ private:
 
 	void VarListTail(ExprRec& expr);
 
-	void VarList();
+	void VarList(ExprRec& expr);
 
 	void InitList();
 
@@ -121,7 +121,7 @@ private:
 
 	void ShoutStmt(ExprRec& expr);
 
-	void ListenStmt();
+	void ListenStmt(ExprRec& expr);
 
 	void AssignStmt();
 

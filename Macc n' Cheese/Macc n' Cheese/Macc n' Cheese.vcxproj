@@ -76,15 +76,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\Macc n%27 Cheese\Macc n%27 Cheese\Macc n%27 Cheese\mnc.cpp" />
-    <ClCompile Include="..\..\..\Macc n%27 Cheese\Macc n%27 Cheese\Macc n%27 Cheese\mnccode.cpp" />
-    <ClCompile Include="..\..\..\Macc n%27 Cheese\Macc n%27 Cheese\Macc n%27 Cheese\mncparse.cpp" />
-    <ClCompile Include="..\..\..\Macc n%27 Cheese\Macc n%27 Cheese\Macc n%27 Cheese\mncscan.cpp" />
+    <ClCompile Include="..\..\Macc n%27 Cheese\Macc n%27 Cheese\mnc.cpp" />
+    <ClCompile Include="..\..\Macc n%27 Cheese\Macc n%27 Cheese\mnccode.cpp" />
+    <ClCompile Include="..\..\Macc n%27 Cheese\Macc n%27 Cheese\mncparse.cpp" />
+    <ClCompile Include="..\..\Macc n%27 Cheese\Macc n%27 Cheese\mncscan.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\Macc n%27 Cheese\Macc n%27 Cheese\Macc n%27 Cheese\mnccode.h" />
-    <ClInclude Include="..\..\..\Macc n%27 Cheese\Macc n%27 Cheese\Macc n%27 Cheese\mncparse.h" />
-    <ClInclude Include="..\..\..\Macc n%27 Cheese\Macc n%27 Cheese\Macc n%27 Cheese\mncscan.h" />
+    <ClInclude Include="..\..\Macc n%27 Cheese\Macc n%27 Cheese\mnccode.h" />
+    <ClInclude Include="..\..\Macc n%27 Cheese\Macc n%27 Cheese\mncparse.h" />
+    <ClInclude Include="..\..\Macc n%27 Cheese\Macc n%27 Cheese\mncscan.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
