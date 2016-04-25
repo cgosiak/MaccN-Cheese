@@ -1,128 +1,60 @@
 
    SAM 2016 Assembler Listing
 
-   April 23, 2016 at 11:27 A.M.
-   SOURCE FILE: test.asm
+   April 25, 2016 at 3:54 P.M.
+   SOURCE FILE: /home/gosi1cal/Desktop/MaccNCheLion/test.asm
 
         LN    LC
          0     0: LDA       R15,VARS
-         1     4: WRST      L6T0
-         2     8: WRI       L1T0
-         3     C: WRNL      
-         4     E: WRST      L6T1
-         5    12: WRI       L2T0
-         6    16: WRNL      
-         7    18: LD        R0,L2T0
-         8    1C: STO       R0,L1T0
-         9    20: WRST      L6T2
-        10    24: WRI       L1T0
-        11    28: WRNL      
-        12    2A: WRST      L6T3
-        13    2E: WRST      L4T0
-        14    32: WRNL      
-        15    34: LDA       R0,L5T0
-        16    38: LD        R1,#50
-        17    3C: BKT       R0,L4T1
-        18    40: WRST      L6T4
-        19    44: WRST      L4T1
-        20    48: WRST      L6T5
-        21    4C: WRNL      
-        22    4E: LDA       R0,L5T1
-        23    52: LD        R1,#50
-        24    56: BKT       R0,L4T2
-        25    5A: WRST      L6T6
-        26    5E: WRST      L4T2
-        27    62: WRNL      
-        28    64: WRST      L6T7
-        29    68: WRNL      
-        30    6A: RDST      L4T3
-        31    6E: WRST      L6T8
-        32    72: WRST      L4T3
-        33    76: WRNL      
-        34    78: HALT      
-        35    7A: % Data Area ------------
-        36    7A: % ----------------------
-        37    7A: LABEL    LBL1
-        38    7A: INT   0
-        39    7C: LABEL    L1T0
-        40    7C: INT       10
-        41    7E: LABEL    LBL2
-        42    7E: INT   0
-        43    80: LABEL    L2T0
-        44    80: INT       276
-        45    82: LABEL    LBL4
-        46    82: SKIP    50
-        47    B4: LABEL    L4T0
-        48    B4: STRING    "Test1"
-        49    BA: LABEL    L4T1
-        50    BA: SKIP      50
-        51    EC: LABEL    L4T2
-        52    EC: SKIP      50
-        53   11E: LABEL    L4T3
-        54   11E: STRING    ""
-        55   120: LABEL    LBL5
-        56   120: SKIP    50
-        57   152: LABEL    L5T0
-        58   152: STRING    "FIRE IS BAD!"
-        59   160: LABEL    L5T1
-        60   160: STRING    "whoa"
-        61   166: LABEL    LBL6
-        62   166: SKIP    50
-        63   198: LABEL    L6T0
-        64   198: STRING    "A:: "
-        65   19C: LABEL    L6T1
-        66   19C: STRING    "B:: "
-        67   1A0: LABEL    L6T2
-        68   1A0: STRING    "A = B:: "
-        69   1A8: LABEL    L6T3
-        70   1A8: STRING    "Y:: "
-        71   1AC: LABEL    L6T4
-        72   1AC: STRING    "Y:: "
-        73   1B0: LABEL    L6T5
-        74   1B0: STRING    "Caleb"
-        75   1B6: LABEL    L6T6
-        76   1B6: STRING    "Y:: "
-        77   1BA: LABEL    L6T7
-        78   1BA: STRING    "Please Enter a string::"
-        79   1D2: LABEL    L6T8
-        80   1D2: STRING    "Y:: "
-        81   1D6: 
-        82   1D6: LABEL     VARS
-        83   1D6: SKIP      2
+         1     4: WRST      L7T0
+         2     8: WRNL      
+         3     A: LD        R0,L2T0
+         4     E: STO       R0,L1T0
+         5    12: LD        R0,L3T0
+         6    16: STO       R0,L2T0
+         7    1A: LD    R7,L2T0
+         8    1E: IA    R7,L3T0
+         9    22: STO   R7,L3T0
+        10    26: WRST      L7T1
+        11    2A: WRI       L1T0
+        12    2E: WRNL      
+        13    30: HALT      
+        14    32: % Data Area ------------
+        15    32: % ----------------------
+        16    32: LABEL    LBL1
+        17    32: INT   0
+        18    34: LABEL    L1T0
+        19    34: INT       0
+        20    36: LABEL    LBL2
+        21    36: INT   0
+        22    38: LABEL    L2T0
+        23    38: INT       9
+        24    3A: LABEL    LBL3
+        25    3A: INT   0
+        26    3C: LABEL    L3T0
+        27    3C: INT       2
+        28    3E: LABEL    LBL7
+        29    3E: SKIP    50
+        30    70: LABEL    L7T0
+        31    70: STRING    "A should equal 2::"
+        32    82: LABEL    L7T1
+        33    82: STRING    "A::"
+        34    86: 
+        35    86: LABEL     VARS
+        36    86: SKIP      2
 
 
 MACC Memory Hexadecimal Dump
 
  ADDR |   0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
 ------+----------------------------------------------------------------
-    0 |  9F  90  01  D6  D4  90  01  98  D0  10  00  7C  D5  80  D4  90
-   10 |  01  9C  D0  10  00  80  D5  80  88  10  00  80  90  10  00  7C
-   20 |  D4  90  01  A0  D0  10  00  7C  D5  80  D4  90  01  A8  D4  90
-   30 |  00  B4  D5  80  98  10  01  52  88  B0  00  32  80  10  00  BA
-   40 |  D4  90  01  AC  D4  90  00  BA  D4  90  01  B0  D5  80  98  10
-   50 |  01  60  88  B0  00  32  80  10  00  EC  D4  90  01  B6  D4  90
-   60 |  00  EC  D5  80  D4  90  01  BA  D5  80  CC  90  01  1E  D4  90
-   70 |  01  D2  D4  90  01  1E  D5  80  F8  00  00  00  00  0A  00  00
-   80 |  01  14  00  00  00  00  00  00  00  00  00  00  00  00  00  00
-   90 |  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
-   A0 |  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
-   B0 |  00  00  00  00  54  65  73  74  31  00  00  00  00  00  00  00
-   C0 |  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
-   D0 |  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
-   E0 |  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
-   F0 |  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
-  100 |  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
-  110 |  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  FE
-  120 |  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
-  130 |  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
-  140 |  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
-  150 |  00  00  46  49  52  45  20  49  53  20  42  41  44  21  00  21
-  160 |  77  68  6F  61  00  61  00  00  00  00  00  00  00  00  00  00
-  170 |  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
-  180 |  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
-  190 |  00  00  00  00  00  00  00  00  41  3A  20  00  42  3A  20  00
-  1A0 |  41  20  3D  20  42  3A  20  00  59  3A  20  00  59  3A  20  00
-  1B0 |  43  61  6C  65  62  00  59  3A  20  00  50  6C  65  61  73  65
-  1C0 |  20  45  6E  74  65  72  20  61  20  73  74  72  69  6E  67  3A
-  1D0 |  00  3A  59  3A  20  00  00  00
+    0 |  9F  90  00  86  D4  90  00  70  D5  80  88  10  00  38  90  10
+   10 |  00  34  88  10  00  3C  90  10  00  38  8B  90  00  38  0B  90
+   20 |  00  3C  93  90  00  3C  D4  90  00  82  D0  10  00  34  D5  80
+   30 |  F8  00  00  00  00  00  00  00  00  09  00  00  00  02  00  00
+   40 |  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+   50 |  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+   60 |  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+   70 |  41  20  73  68  6F  75  6C  64  20  65  71  75  61  6C  20  32
+   80 |  3A  00  41  3A  00  3A  00  00
 

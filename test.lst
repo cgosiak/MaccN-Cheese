@@ -9,131 +9,64 @@
 				the MACC2 virtual computer.
  _______________________________________________________________
 
- April 23, 2016 at 11:33 AM
- Source file: /home/caleb/Desktop/MaccNCheLion/test.mnc
+ April 25, 2016 at 03:54 PM
+ Source file: /home/gosi1cal/Desktop/MaccNCheLion/test.mnc
 
  LINE #
                     LDA       R15,VARS
-     1  decs {
-     2  	int: a, b, c;
-     3  	cheese: y, t;
-     4  }
-     5  
-     6  a = 10;
-     7  
-                    WRST      L6T0
-                    WRI       L1T0
-                    WRNL      
-     8  shout "A: ", a;
+     1  /: Testing Comments
+     2  
+     3  Does this still work? :/
+     4  decs {
+     5  	int: a, b, c;
+     6  	float: t;
+     7  	cheese: y,z;
+     8  }
      9  
-    10  b = 276;
-    11  
-                    WRST      L6T1
-                    WRI       L2T0
+                    WRST      L7T0
                     WRNL      
-    12  shout "B: ", b;
-    13  
+    10  shout "A should equal 2:";
+    11  
+    12  b = 9;
+    13  c = 2;
+    14  
                     LD        R0,L2T0
                     STO       R0,L1T0
-    14  a = b;
-    15  
-                    WRST      L6T2
+                    LD        R0,L3T0
+                    STO       R0,L2T0
+                    LD    R7,L2T0
+                    IA    R7,L3T0
+                    STO   R7,L3T0
+    15  a = b + c;
+    16  
+                    WRST      L7T1
                     WRI       L1T0
                     WRNL      
-    16  shout "A = B: ", a;
-    17  
-    18  y = "Test1";
+    17  shout "A:", a;
+    18  
     19  
-                    WRST      L6T3
-                    WRST      L4T0
-                    WRNL      
-    20  shout "Y: ", y;
-    21  
-    22  t = "FIRE IS BAD!";
-    23  
-                    LDA       R0,L5T0
-                    LD        R1,#50
-                    BKT       R0,L4T1
-    24  y = t;
-    25  
-                    WRST      L6T4
-                    WRST      L4T1
-                    WRST      L6T5
-                    WRNL      
-    26  shout "Y: ", y, "Caleb";
-    27  
-    28  t = "whoa";
-    29  
-                    LDA       R0,L5T1
-                    LD        R1,#50
-                    BKT       R0,L4T2
-    30  y = t;
-    31  
-                    WRST      L6T6
-                    WRST      L4T2
-                    WRNL      
-    32  shout "Y: ", y;
-    33  
-                    WRST      L6T7
-                    WRNL      
-    34  shout "Please Enter a string:";
-    35  
-                    RDST      L4T3
-    36  listen y;
-    37  
-                    WRST      L6T8
-                    WRST      L4T3
-                    WRNL      
-    38  shout "Y: ", y;
-    39  
-    40  
+    20  
                     HALT      
                     % Data Area ------------
 % ----------------------
 LABEL    LBL1
 INT   0
 LABEL    L1T0
-INT       10
+INT       0
 LABEL    LBL2
 INT   0
 LABEL    L2T0
-INT       276
-LABEL    LBL4
+INT       9
+LABEL    LBL3
+INT   0
+LABEL    L3T0
+INT       2
+LABEL    LBL7
 SKIP    50
-LABEL    L4T0
-STRING    "Test1"
-LABEL    L4T1
-SKIP      50
-LABEL    L4T2
-SKIP      50
-LABEL    L4T3
-STRING    ""
-LABEL    LBL5
-SKIP    50
-LABEL    L5T0
-STRING    "FIRE IS BAD!"
-LABEL    L5T1
-STRING    "whoa"
-LABEL    LBL6
-SKIP    50
-LABEL    L6T0
-STRING    "A:: "
-LABEL    L6T1
-STRING    "B:: "
-LABEL    L6T2
-STRING    "A = B:: "
-LABEL    L6T3
-STRING    "Y:: "
-LABEL    L6T4
-STRING    "Y:: "
-LABEL    L6T5
-STRING    "Caleb"
-LABEL    L6T6
-STRING    "Y:: "
-LABEL    L6T7
-STRING    "Please Enter a string::"
-LABEL    L6T8
-STRING    "Y:: "
+LABEL    L7T0
+STRING    "A should equal 2::"
+LABEL    L7T1
+STRING    "A::"
 
                     LABEL     VARS
                     SKIP      2

@@ -1,38 +1,18 @@
+/: Testing Comments
+
+Does this still work? :/
 decs {
 	int: a, b, c;
-	cheese: y, t;
+	float: t;
+	cheese: y,z;
 }
 
-a = 10;
+shout "A should equal 2:";
 
-shout "A: ", a;
+b = 9;
+c = 2;
 
-b = 276;
+a = b + c;
 
-shout "B: ", b;
+shout "A:", a;
 
-a = b;
-
-shout "A = B: ", a;
-
-y = "Test1";
-
-shout "Y: ", y;
-
-t = "FIRE IS BAD!";
-
-y = t;
-
-shout "Y: ", y, "Caleb";
-
-t = "whoa";
-
-y = t;
-
-shout "Y: ", y;
-
-shout "Please Enter a string:";
-
-listen y;
-
-shout "Y: ", y;

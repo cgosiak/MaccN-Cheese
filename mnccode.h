@@ -95,12 +95,12 @@ class CodeGen {
 	void ReadId(const ExprRec & InVar);
 	// Produces the assembly code for reading a value for InVar.
 
-
+	void ProcessOperation_SymbolTable(string id, string old_lbl, Token op_used);
 
 	void WriteExpr(const ExprRec & OutExpr);
 	// Produces the assembly code for writing the value of OutExpr.
 
-	void WriteString();
+	void WriteString(string input);
 
 	/* _____________________________________________________________________________
 	*/

@@ -164,7 +164,6 @@ Token Scanner::GetNextToken()
 		else if (currentChar == '+') return PLUS_OP;
 		else if (currentChar == '-') return MINUS_OP;
 		else if (currentChar == '*') return MULT_OP;
-		else if (currentChar == '/') return DIV_OP;
 		else if (currentChar == '<') 
 			if (sourceFile.peek() == '=') {//  <= operator
 				currentChar = NextChar();
@@ -212,10 +211,19 @@ Token Scanner::GetNextToken()
 			else
 				LexicalError(currentChar);
 		else if (currentChar == '/')  
-			if (sourceFile.peek() == '/') // comment
-				do  // skip comment
-					currentChar = NextChar();
-				while (currentChar != '\n');
+			if (sourceFile.peek() == '/') {// comment
+                do  // skip comment
+                    currentChar = NextChar();
+                while (currentChar != '\n');
+            }
+            else if (sourceFile.peek() == ':') {// comment
+                currentChar = NextChar();
+                do  // skip comment
+                    currentChar = NextChar();
+                while (currentChar != ':' && sourceFile.peek() != '/');
+                currentChar = NextChar();
+                currentChar = NextChar();
+            }
 			else
 			{
 				BufferChar(currentChar);      // division operator
@@ -239,4 +247,10 @@ Token Scanner::GetNextToken()
 			LexicalError(currentChar);
 	} // end while
 	return EOF_SYM;
+}
+
+string Scanner::GetTokenString(int input) {
+	string value = "";
+
+	return value;
 }
