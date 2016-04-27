@@ -35,9 +35,9 @@ private:
 
 	void InitTail();
 
-	void VarDecTail(ExprRec& expr);
+	void VarDecTail();
 
-	void VarDecList(ExprRec& expr);
+	void VarDecList();
 
 	void DecTail();
 
@@ -51,25 +51,25 @@ private:
 
 	void CheeseType();
 
-	void Type(ExprRec& expr);
+	void Type();
 
 	void Literal();
 
 	void MultOp();
 
-	void FactorTail(ExprRec& expr);
+	void FactorTail(bool is_assign);// ExprRec& expr);
 
-	void Primary(ExprRec& expr);
+	void Primary(bool is_assign);
 
 	void AddOp();
 
-	void ExprTail(ExprRec& expr);
+	void ExprTail(bool is_assign);
 
-	void Factor(ExprRec& expr);
+	void Factor(bool is_assign);// ExprRec& expr);
 
 	void RelOp();
 
-	void CondTail(OpRec& op, ExprRec& expr);
+	void CondTail();
 
 	void IntListTail();
 
@@ -85,7 +85,7 @@ private:
 
 	void ElseClause();
 
-	void Condition(ExprRec& expr);
+	void Condition();
 
 	void VarDecs();
 
@@ -99,35 +99,35 @@ private:
 
 	void IfStmt();
 
-	void ItemListTail(ExprRec& expr);
+	void ItemListTail(ExprRec& expr, bool is_assign);
 
-	void ItemList();
+	void ItemList(bool is_assign);// ExprRec& expr);
 
 	void VariableTail();
 
-	void VarListTail(ExprRec& expr);
+	void VarListTail();
 
-	void VarList(ExprRec& expr);
+	void VarList();
 
 	void InitList();
 
-	void Expression(ExprRec& expr);
+	void Expression(bool is_assign);//ExprRec& expr);
 
-	void AssignTail(ExprRec& expr);
+	void AssignTail();
 
-	void Variable(ExprRec& expr);
+	void Variable();
 
 	void BreakStmt();
 
-	void ShoutStmt(ExprRec& expr);
+	void ShoutStmt(const ExprRec& expr);
 
-	void ListenStmt(ExprRec& expr);
+	void ListenStmt();
 
 	void AssignStmt();
 
 	void StructStmt();
 
-	void SimpleStmt(ExprRec& expr);
+	void SimpleStmt(const ExprRec& expr);
 
 	void StmtTail();
 

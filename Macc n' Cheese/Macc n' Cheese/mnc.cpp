@@ -12,11 +12,13 @@ listFile;   // compiler listing
 #include "mncscan.h"   // scanner component definition 
 #include "mncparse.h"	 // parser component definition
 #include "mnccode.h"   // code generator component definition
+#include "SymbolTable.h"
 
 // GLOBAL COMPONENT OBJECTS
 Scanner scan;        // scanner
 Parser parse;        // parser
 CodeGen code;        // code generator
+SymbolTable symbolTable;
 
 string Date();
 // Returns the current date.
@@ -25,7 +27,7 @@ string Time();
 // Returns the current time.
 
 int main() {
-	string sourceName, outName, listName;
+	string sourceName, outName, listName, sam_name;
 
 	cout
 		<< "\n"
@@ -34,8 +36,13 @@ int main() {
 		<< endl;
 
 	cout << " Source file (.mnc extension is assumed): ";
-//	getline(cin, sourceName);
-	sourceName = "test1 (2)";
+	// getline(cin, sourceName);
+	// sourceName = "/home/gosi1cal/Desktop/MaccNCheLion/test"; // school
+	// sourceName = "/home/gosi1cal/Desktop/MaccNCheLion/Assign03"; // school
+	// sourceName = "/home/caleb/Desktop/MaccNCheLion/test"; // home
+	sourceName = "test1";
+
+    sam_name = sourceName;
 
 	// Add appropriate extensions to file names.
 	outName = sourceName + ".asm";
@@ -71,6 +78,10 @@ int main() {
 		<< "\n Listing file --> " << listName << endl << endl;
 
 	//	cin.get();
+
+    string ter = "sam \"" + sam_name + "\"";
+    system(ter.c_str());
+
 	return 0;
 }
 

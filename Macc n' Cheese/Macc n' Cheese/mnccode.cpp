@@ -20,7 +20,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <sstream>
 using namespace std;
 
 extern ifstream sourceFile;
@@ -28,14 +27,10 @@ extern ofstream outFile, listFile;
 
 #include "mncscan.h"   // Scanner class definition
 #include "mnccode.h"
-
-string float_to_str(float f) {
-	stringstream ss;
-	ss << f;
-	return ss.str();
-}
+#include "SymbolTable.h"
 
 extern Scanner scan; // global Scanner object declared in micro.cpp
+extern SymbolTable symbolTable;
 
 // *******************
 // **  Constructor  **
@@ -58,7 +53,7 @@ void CodeGen::CheckId(const string & s)
 
 void CodeGen::Enter(const string & s)
 {
-	symbolTable.push_back(s);
+	symbolTable_Vector.push_back(s);
 }
 
 void CodeGen::ExtractExpr(const ExprRec & e, string& s)
@@ -72,37 +67,12 @@ void CodeGen::ExtractExpr(const ExprRec & e, string& s)
 	case TEMP_EXPR:  // operand form: +k(R15)
 		s = e.name;
 		n = 0;
-		while (symbolTable[n] != s) n++;
+		while (symbolTable_Vector[n] != s) n++;
 		k = 2 * n;  // offset: 2 bytes per variable
 		IntToAlpha(k, t);
 		s = "+" + t + "(R15)";
 		break;
 	case LITERAL_EXPR:
-		switch (e.type) {
-			case BOOL:
-			case INT:{
-				IntToAlpha(e.val, t);
-				s = "#" + t;
-				break;
-			}
-			case CHEESE:{
-				s = e.sval;
-				break;
-			}
-			case FLOAT:{
-				s = e.name;
-				n = 0;
-				while (symbolTable[n] != s) n++;
-				k = 2 * n;  // offset: 2 bytes per variable
-				IntToAlpha(k, t);
-				s = "+" + t + "(R15)";
-				break;
-			}
-			default:{
-				//TODO print error
-				break;
-			}
-		}
 		IntToAlpha(e.val, t);
 		s = "#" + t;
 	}
@@ -112,11 +82,7 @@ string CodeGen::ExtractOp(const OpRec & o)
 {
 	if (o.op == PLUS)
 		return "IA        ";
-	else if(o.op == MINUS)
-		return "IS        ";
-	else if(o.op == MULT)
-		return "IS        ";
-	else if (o.op == DIVN)
+	else
 		return "IS        ";
 }
 
@@ -174,8 +140,8 @@ void CodeGen::IntToAlpha(int val, string& str)
 
 bool CodeGen::LookUp(const string & s)
 {
-	for (unsigned i = 0; i < symbolTable.size(); i++)
-	if (symbolTable[i] == s)
+	for (unsigned i = 0; i < symbolTable_Vector.size(); i++)
+	if (symbolTable_Vector[i] == s)
 		return true;
 
 	return false;
@@ -202,8 +168,12 @@ void CodeGen::Finish()
 	listFile.width(6);
 	listFile << ++scan.lineNumber << "  " << scan.lineBuffer << endl;
 	Generate("HALT      ", "", "");
+	
+	// Output Symbol Table
+	Generate(symbolTable.FinishSymbolTable(),"","");
+
 	Generate("LABEL     ", "VARS", "");
-	IntToAlpha(int(2*(symbolTable.size()+1)), s);
+	IntToAlpha(int(2*(symbolTable_Vector.size()+1)), s);
 	Generate("SKIP      ", s, "");
 	outFile.close();
 	listFile << endl << endl;
@@ -214,10 +184,10 @@ void CodeGen::Finish()
 	listFile << " Address      Identifier" << endl;
 	listFile << " --------     --------------------------------" 
 		<< endl;
-	for (unsigned i = 0; i < symbolTable.size(); i++)
+	for (unsigned i = 0; i < symbolTable_Vector.size(); i++)
 	{
 		listFile.width(7);
-		listFile << 2*i << "       " << symbolTable[i] << endl;
+		listFile << 2*i << "       " << symbolTable_Vector[i] << endl;
 	}
 	listFile << " _____________________________________________" 
 		<< endl;
@@ -226,50 +196,65 @@ void CodeGen::Finish()
 	listFile.close();
 }
 
-void CodeGen::Shout(ExprRec& e) {
+void CodeGen::Shout(Token type_used) {
 	string s;
 
-	switch (e.type) {
-		case CHEESE:
-			s = e.sval;
-			Generate("WRST       ", s, "");
-			break;
-		case INT:
-			IntToAlpha(e.val, s);
-			Generate("WRI       ", s, "");
-			break;
-		case FLOAT:
-			s = float_to_str(e.fval);
-			Generate("WRF       ", s, "");
-			break;
-		case BOOL:
-			//TODO shout: bool
-			break;
-	}	
-}
+	if (!(symbolTable.EntryExists("DECS"))) {
+			symbolTable.AddEntry("DECS",TYPE_CHEESE_LIT);
+	}
 
-void CodeGen::Listen(ExprRec& e) {
-
-	switch (e.kind) {
-	case CHEESE_LIT:
-		Generate("RDST       ", e.name, "");
-		break;
-	case INT_LIT:
-		Generate("RDI       ", "*R4", "");
-		Generate("STO       ", e.name, "*R4");
-		break;
-	case FLOAT_LIT:
-		Generate("RDF       ", "*R4", "");
-		Generate("STO       ", e.name, "*R4");
-		break;
+	switch (type_used) {
+		case CHEESE_LIT:
+			s = scan.stringBuffer.data();
+            WriteString(s);
+			break;
+		case INT_LIT:
+		case FLOAT_LIT:
+			IntToAlpha(atof(scan.tokenBuffer.data()), s);
+            symbolTable.UpdateEntry("DECS",s);
+            Shout_Variable("DECS");
+			break;
 	}
 }
 
-void CodeGen::ProcessVar(ExprRec& e) {
-	Generate("LA       ", "R4", e.name);
+void CodeGen::Shout_Variable(std::string input_var) {
+	DataEntry cur_entry = symbolTable.GetDataObject(input_var);
+
+	switch (cur_entry.GetType()) {
+		case TYPE_CHEESE_LIT:
+			Generate("WRST      ", cur_entry.GetCurrentTempVar(), "");
+			break;
+		case TYPE_BOOL_LIT:
+		case TYPE_INT_LIT:
+			Generate("WRI       ", cur_entry.GetCurrentTempVar(), "");
+			break;
+		case TYPE_FLOAT_LIT:
+			Generate("WRF       ", cur_entry.GetCurrentTempVar(), "");
+			break;
+	}
 }
 
-void CodeGen::setCondition(){}
+void CodeGen::Listen(std::string input_var) {
+	symbolTable.UpdateEntry(input_var,"");
+
+	DataEntry cur_entry = symbolTable.GetDataObject(input_var);
+
+	switch (cur_entry.GetType()) {
+		case TYPE_CHEESE_LIT:
+            symbolTable.ReserveNewLabel(input_var);
+            cur_entry = symbolTable.GetDataObject(input_var);
+			Generate("RDST      ", cur_entry.GetCurrentTempVar(), "");
+			break;
+		case TYPE_BOOL_LIT:
+		case TYPE_INT_LIT:
+			Generate("RDI       ", cur_entry.GetCurrentTempVar(), "");
+			break;
+		case TYPE_FLOAT_LIT:
+			Generate("RDF       ", cur_entry.GetCurrentTempVar(), "");
+            Generate("RDNL       ", "", "");
+			break;
+	}
+}
 
 void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op, 
                        const ExprRec & e2, ExprRec& e)
@@ -286,13 +271,6 @@ void CodeGen::GenInfix(const ExprRec & e1, const OpRec & op,
 			break;
 		case MINUS:
 			e.val = e1.val - e2.val;
-			break;
-		case MULT:
-			e.val = e1.val * e2.val;
-			break;
-		case DIVN:
-			e.val = e1.val / e2.val;
-			break;
 		}
 	}
 	else
@@ -324,18 +302,15 @@ void CodeGen::ProcessLiteral(ExprRec& e)
 {
 	e.kind = LITERAL_EXPR;
 	e.val = atoi(scan.tokenBuffer.data());
+	// cout << scan.tokenBuffer.data() << endl;
 }
 
 void CodeGen::ProcessOp(OpRec& o)
 {
 	if (scan.tokenBuffer == "+")
 		o.op = PLUS;
-	else if (scan.tokenBuffer == "-")
+	else
 		o.op = MINUS;
-	else if (scan.tokenBuffer == "*")
-		o.op = MULT;
-	else if (scan.tokenBuffer == "/")
-		o.op = DIVN;
 }
 
 void CodeGen::ReadId(const ExprRec & inVar)
@@ -359,97 +334,141 @@ void CodeGen::WriteExpr(const ExprRec & outExpr)
 	Generate("WRI       ", s, "");
 }
 
-void CodeGen::WriteString()
+void CodeGen::WriteString(string input)
 {
-	string s;
-	s = scan.tokenBuffer.data();
-	Generate("WRST      ", s, "");
+	string s = "";
+	for (int i = 0; i < input.length(); i++){
+
+        if (input[i] == '\\' && i != input.length() - 1){
+            if ( input[i + 1] == 'n') {
+                cerr << s << endl;
+
+                // symbolTable.UpdateEntry("DECS",s);
+                // Shout_Variable("DECS");
+
+                Generate("WRNL", "", "");
+                i++;
+                s = "";
+            }
+        }
+        else {
+            s += input[i];
+        }
+    }
+    if (s.length()) {
+        cerr << s << endl;
+        symbolTable.UpdateEntry("DECS",s);
+        Shout_Variable("DECS");
+    }
 }
 
-void CodeGen::DefineVar(ExprRec& var) {
-	string name = scan.tokenBuffer;
+void CodeGen::Assign_Var2Var(std::string target, std::string source) {
+	DataEntry tar = symbolTable.GetDataObject(target);
+	DataEntry sou = symbolTable.GetDataObject(source);
 
-	if (LookUp(name)) {
-		//TODO error variable name already declared
-	}
-	else {
-		var.name = name;
-		Enter(name);
-	}
+    if (sou.GetCurrentTempVar() == "") {
+        symbolTable.UpdateEntry(source,"0");
+    }
+    if (tar.GetCurrentTempVar() == "") {
+        symbolTable.UpdateEntry(target,"0");
+    }
+    tar = symbolTable.GetDataObject(target);
+    sou = symbolTable.GetDataObject(source);
+
+    if (tar.GetType() == TYPE_CHEESE_LIT) {
+        symbolTable.ReserveNewLabel(target);
+        tar = symbolTable.GetDataObject(target);
+        Generate("LDA       ", "R0", sou.GetCurrentTempVar());
+        Generate("LD        ", "R1", "#" + std::to_string(string_reservation_space));
+        Generate("BKT       ", "R0", tar.GetCurrentTempVar());
+    }
+    else if (tar.GetType() == TYPE_FLOAT_LIT) {
+        Generate("LDA       ", "R0", sou.GetCurrentTempVar());
+        Generate("LD        ", "R1", "#4");
+        Generate("BKT       ", "R0", tar.GetCurrentTempVar());
+    }
+    else {
+        Generate("LD        ", "R0", sou.GetCurrentTempVar());
+        Generate("STO       ", "R0", tar.GetCurrentTempVar());
+    }
 }
 
-void CodeGen::ProcessVar() {
-	//TODO CodeGen::ProcessVar()
-}
-
-void CodeGen::IntAppend() {
-	//TODO CodeGen::IntAppend()
-}
-
-void CodeGen::CaseEnd() {
-	//TODO CodeGen::CaseEnd()
-}
-
-void CodeGen::ForAssign() {
-	//TODO CodeGen::ForAssign()
-}
-
-void CodeGen::SetCondition(const ExprRec& e1, const OpRec& op, const ExprRec& e2, ExprRec& e) {
-	//TODO CodeGen::SetCondition(const ExprRec& e1, const OpRec& op, const ExprRec& e2, ExprRec& e)
-}
-
-void CodeGen::SelectBegin() {
-	//TODO CodeGen::SelectBegin()
-}
-
-void CodeGen::Otherwise() {
-	//TODO CodeGen::Otherwise() 
-}
-
-void CodeGen::SelectEnd() {
-	//TODO CodeGen::SelectEnd()
-}
-
-void CodeGen::ForBegin() {
-	//TODO CodeGen::ForBegin()
-}
-
-void CodeGen::ForUpdate() {
-	//TODO CodeGen::ForUpdate()
-}
-
-void CodeGen::ForEnd() {
-	//TODO CodeGen::ForEnd()
-}
-
-void CodeGen::Break() {
-	//TODO CodeGen::Break()
-}
-
-void CodeGen::IfThen() {
-	//TODO CodeGen::IfThen()
-}
-
-void CodeGen::IfElse() {
-	//TODO CodeGen::IfElse()
-}
-
-void CodeGen::IfEnd() {
-	//TODO CodeGen::IfEnd()
-}
-
-void CodeGen::LoopBegin() {
-	//TODO CodeGen::LoopBegin()
-}
-
-void CodeGen::LoopEnd() {
-	//TODO CodeGen::LoopEnd()
-}
-
-void CodeGen::WhileBegin() {
-	//TODO CodeGen::WhileBegin()
-}
-
-void CodeGen::WhileEnd() {
-	//TODO CodeGen::WhileEnd()
+void CodeGen::ProcessOperation_SymbolTable(string id, string old_lbl, Token op_used) {
+    string storage = "";
+    switch (op_used) {
+        case PLUS_OP:
+            switch (symbolTable.GetDataObject(id).GetType()) {
+                case TYPE_FLOAT_LIT:
+                    Generate("LDA   ","R1",old_lbl);
+                    Generate("LD    ","R7","+0(R1)");
+                    Generate("LD    ","R8","+2(R1)");
+                    Generate("FA    ","R7",symbolTable.GetDataObject(id).GetCurrentTempVar());
+                    Generate("LDA   ","R1",symbolTable.GetDataObject(id).GetCurrentTempVar());
+                    Generate("STO   ","R7","+0(R1)");
+                    Generate("STO   ","R8","+2(R1)");
+                    break;
+                case TYPE_INT_LIT:
+                    Generate("LD    ","R7",old_lbl);
+                    Generate("IA    ","R7",symbolTable.GetDataObject(id).GetCurrentTempVar());
+                    Generate("STO   ","R7",symbolTable.GetDataObject(id).GetCurrentTempVar());
+                    break;
+            }
+            break;
+        case MINUS_OP:
+            switch (symbolTable.GetDataObject(id).GetType()) {
+                case TYPE_FLOAT_LIT:
+                    Generate("LDA   ","R1",old_lbl);
+                    Generate("LD    ","R7","+0(R1)");
+                    Generate("LD    ","R8","+2(R1)");
+                    Generate("FS    ","R7",symbolTable.GetDataObject(id).GetCurrentTempVar());
+                    Generate("LDA   ","R1",symbolTable.GetDataObject(id).GetCurrentTempVar());
+                    Generate("STO   ","R7","+0(R1)");
+                    Generate("STO   ","R8","+2(R1)");
+                    break;
+                case TYPE_INT_LIT:
+                    Generate("LD    ","R7",old_lbl);
+                    Generate("IS    ","R7",symbolTable.GetDataObject(id).GetCurrentTempVar());
+                    Generate("STO   ","R7",symbolTable.GetDataObject(id).GetCurrentTempVar());
+                    break;
+            }
+            break;
+        case DIV_OP:
+            switch (symbolTable.GetDataObject(id).GetType()) {
+                case TYPE_FLOAT_LIT:
+                    Generate("LDA   ","R1",old_lbl);
+                    Generate("LD    ","R7","+0(R1)");
+                    Generate("LD    ","R8","+2(R1)");
+                    Generate("FD    ","R7",symbolTable.GetDataObject(id).GetCurrentTempVar());
+                    Generate("LDA   ","R1",symbolTable.GetDataObject(id).GetCurrentTempVar());
+                    Generate("STO   ","R7","+0(R1)");
+                    Generate("STO   ","R8","+2(R1)");
+                    break;
+                case TYPE_INT_LIT:
+                    Generate("LD    ","R7",old_lbl);
+                    Generate("ID    ","R7",symbolTable.GetDataObject(id).GetCurrentTempVar());
+                    Generate("STO   ","R7",symbolTable.GetDataObject(id).GetCurrentTempVar());
+                    break;
+            }
+            break;
+        case MULT_OP:
+            switch (symbolTable.GetDataObject(id).GetType()) {
+                case TYPE_FLOAT_LIT:
+                    Generate("LDA   ","R1",old_lbl);
+                    Generate("LD    ","R7","+0(R1)");
+                    Generate("LD    ","R8","+2(R1)");
+                    Generate("FM    ","R7",symbolTable.GetDataObject(id).GetCurrentTempVar());
+                    Generate("LDA   ","R1",symbolTable.GetDataObject(id).GetCurrentTempVar());
+                    Generate("STO   ","R7","+0(R1)");
+                    Generate("STO   ","R8","+2(R1)");
+                    break;
+                case TYPE_INT_LIT:
+                    Generate("LD    ","R7",old_lbl);
+                    Generate("IM    ","R7",symbolTable.GetDataObject(id).GetCurrentTempVar());
+                    Generate("STO   ","R7",symbolTable.GetDataObject(id).GetCurrentTempVar());
+                    break;
+            }
+            break;
+        default:
+            break;
+    }
 }

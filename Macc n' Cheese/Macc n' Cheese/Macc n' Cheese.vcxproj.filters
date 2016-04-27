@@ -27,6 +27,12 @@
     <ClCompile Include="..\..\Macc n%27 Cheese\Macc n%27 Cheese\mncscan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Macc n%27 Cheese\Macc n%27 Cheese\Macc n%27 Cheese\DataEntry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Macc n%27 Cheese\Macc n%27 Cheese\Macc n%27 Cheese\SymbolTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Macc n%27 Cheese\Macc n%27 Cheese\mncscan.h">
@@ -36,6 +42,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Macc n%27 Cheese\Macc n%27 Cheese\mncparse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Macc n%27 Cheese\Macc n%27 Cheese\Macc n%27 Cheese\DataEntry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Macc n%27 Cheese\Macc n%27 Cheese\Macc n%27 Cheese\SymbolTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

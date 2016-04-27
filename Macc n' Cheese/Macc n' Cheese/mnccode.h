@@ -14,19 +14,16 @@ struct OpRec // information about an operator
 	OpKind op;
 };
 
-enum ExprKind { ID_EXPR, LITERAL_EXPR, TEMP_EXPR };
-
-enum VarKind { INT, FLOAT, CHEESE, BOOL };
+enum ExprKind { ID_EXPR, LITERAL_EXPR, TEMP_EXPR};
 
 struct ExprRec // information about a constant, variable, or
 	// an intermediate (temporary) result
 {
 	ExprKind kind;   // operand type
-	VarKind	 type;	 // variable type
 	string   name;   // used when kind is ID_EXPR or TEMP_EXPR
-	int      val;    // used when type is LITERAL_EXPR
-	string	 sval;	 // used when type is CHEESE
-	float	 fval;   // used when type is FLOAT
+	int      val;    // used when kind is LITERAL_EXPR
+	string	 sval;	 // used when kind is CHEESE_LITERAL
+	float	 fval;   // used when kind is FLOAT_LITERAL
 };
 
 class CodeGen {
@@ -44,21 +41,23 @@ class CodeGen {
 	void Finish();
 	// Generates code to finish the program.
 
-	void ProcessVar(ExprRec& e);
+	void ProcessVar();
 
 	void Assign(const ExprRec & target, const ExprRec & source);
 	// Produces the assembly code for an assignment from Source to Target.
 
-	void Listen(ExprRec& e);
+	void Assign_Var2Var(std::string target, std::string source);
+
+	void Listen(std::string input_var);
 
 	void Break();
 
 	void NewLine();
 	// Produces the assembly code for starting a new output line.
 
-	void Shout(ExprRec& e);
+	void Shout(Token type_used);
 
-	void setCondition();
+	void Shout_Variable(std::string input_var);
 
 	void IfThen();
 
@@ -74,11 +73,12 @@ class CodeGen {
 
 	void WhileEnd();
 
+
 	void GenInfix(const ExprRec & e1, const OpRec & op,
 		const ExprRec & e2, ExprRec& e);
 	// Produces the assembly code for an infix operation.
 
-	void DefineVar(ExprRec& e);
+
 
 	void ProcessId(ExprRec& e);
 	// Declares the identifier in the token buffer and builds a
@@ -95,47 +95,23 @@ class CodeGen {
 	void ReadId(const ExprRec & InVar);
 	// Produces the assembly code for reading a value for InVar.
 
+	void ProcessOperation_SymbolTable(string id, string old_lbl, Token op_used);
+
 	void WriteExpr(const ExprRec & OutExpr);
 	// Produces the assembly code for writing the value of OutExpr.
 
-	void WriteString();
-
-	void ProcessVar();
-
-	void IntAppend();
-
-	void CaseEnd();
-
-	void ForAssign();
-
-	void SetCondition(const ExprRec& e1, const OpRec& op, const ExprRec& e2, ExprRec& e);
-
-	void SelectBegin();
-
-	void Otherwise();
-
-	void SelectEnd();
-
-	void ForBegin();
-
-	void ForUpdate();
-	
-	void ForEnd();
-
-
-
-
-
-
+	void WriteString(string input);
 
 	/* _____________________________________________________________________________
 	*/
 
 	private:
 
-	vector<string> symbolTable;
+	vector<string> symbolTable_Vector;
 
 	int  maxTemp;     // max temporary allocated so far; initially 0
+
+	int string_reservation_space = 50;
 
 	void CheckId(const string & s);
 	// Declares s as a new variable and enters it into the symbol table when s

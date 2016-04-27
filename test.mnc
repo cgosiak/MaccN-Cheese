@@ -1,38 +1,7 @@
 decs {
 	int: a, b, c;
-	cheese: y, t;
+	float: t;
+	cheese: y, z;
 }
 
-a = 10;
-
-shout "A: ", a;
-
-b = 276;
-
-shout "B: ", b;
-
-a = b;
-
-shout "A = B: ", a;
-
-y = "Test1";
-
-shout "Y: ", y;
-
-t = "FIRE IS BAD!";
-
-y = t;
-
-shout "Y: ", y, "Caleb";
-
-t = "whoa";
-
-y = t;
-
-shout "Y: ", y;
-
-shout "Please Enter a string:";
-
-listen y;
-
-shout "Y: ", y;
+shout 1234.123e3

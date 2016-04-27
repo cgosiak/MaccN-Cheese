@@ -8,19 +8,12 @@
 
 #include <iostream>
 #include <string>
-#include <sstream>
 using namespace std;
 
 #include "mncparse.h"
 #include "mnccode.h"
 #include "mncscan.h"
-
-float str_to_float(string str) {
-	stringstream s(str);
-	float ret;
-	s >> ret;
-	return ret;
-}
+#include "SymbolTable.h"
 
 #pragma region gettokentext
 
@@ -36,6 +29,11 @@ struct Tokens {
 	X(DIV_OP)X(LT_OP)X(LE_OP)X(GT_OP)X(GE_OP)X(EQ_OP1)X(EQ_OP2)X(NE_OP)X(ID)X(INT_LIT)X(FLOAT_LIT)X(CHEESE_LIT)
 };
 #undef X
+
+DataTypes currentType;
+std::string currentVar;
+std::string assign_to_var;
+
 std::string getTokenText(int token) {
 	int size = (sizeof(Tokens) / sizeof(*Tokens));
 	for (int i = 0; i < size; i++) {
@@ -49,6 +47,8 @@ std::string getTokenText(int token) {
 
 extern CodeGen code;
 extern Scanner scan;
+extern SymbolTable symbolTable;
+
 
 Parser::Parser()
 {
@@ -57,7 +57,7 @@ Parser::Parser()
 
 void Parser::SyntaxError(Token t, string msg)
 {
-	cout << "Syntax Error: " + msg << endl;
+	cerr << "Syntax Error: " << getTokenText(t) << endl;
 	exit(1); // abort on any syntax error
 }
 
@@ -79,17 +79,16 @@ void Parser::Match(Token t)
 		tokenAvailable = false;
 }
 
+
 void Parser::InitTail()
 {
 	switch (NextToken())
 	{
-	case COMMA:{
+	case COMMA:
 		Match(COMMA);
-		ExprRec expr;
-		Expression(expr);
+		Expression(false);
 		InitTail();
 		break;
-	}
 	case RMUSTACHE:
 		break;
 	default:
@@ -97,15 +96,16 @@ void Parser::InitTail()
 	}
 }
 
-void Parser::VarDecTail(ExprRec& expr)
+void Parser::VarDecTail()
 {
 	switch (NextToken())
 	{
 	case COMMA:
 		Match(COMMA);
 		Match(ID);
-		code.DefineVar(expr);
-		VarDecTail(expr);
+		// code.DefineVar();
+		symbolTable.AddEntry(scan.tokenBuffer.data(),currentType);
+		VarDecTail();
 		break;
 	case SEMICOLON:
 		break;
@@ -114,11 +114,12 @@ void Parser::VarDecTail(ExprRec& expr)
 	}
 }
 
-void Parser::VarDecList(ExprRec& expr)
+void Parser::VarDecList()
 {
 	Match(ID);
-	code.DefineVar(expr);
-	VarDecTail(expr);
+	symbolTable.AddEntry(scan.tokenBuffer.data(),currentType);
+	// code.DefineVar();
+	VarDecTail();
 }
 
 void Parser::DecTail()
@@ -142,17 +143,15 @@ void Parser::DecTail()
 
 void Parser::Declaration()
 {
-	ExprRec expr;
-
 	switch (NextToken())
 	{
 	case BOOL_SYM:
 	case CHEESE_SYM:
 	case FLOAT_SYM:
 	case INT_SYM:
-		Type(expr);
+		Type();
 		Match(COLON);
-		VarDecList(expr);
+		VarDecList();
 		Match(SEMICOLON);
 		break;
 	case HIPHIP_SYM:
@@ -160,8 +159,8 @@ void Parser::Declaration()
 		Match(LSTAPLE);
 		Match(INT_LIT);
 		Match(RSTAPLE);
-		Type(expr);
-		VarDecList(expr);
+		Type();
+		VarDecList();
 		Match(SEMICOLON);
 		break;
 	default:
@@ -213,21 +212,25 @@ void Parser::CheeseType()
 	CheeseTypeTail();
 }
 
-void Parser::Type(ExprRec& expr)
+void Parser::Type()
 {
 	switch (NextToken())
 	{
 	case BOOL_SYM:
 		Match(BOOL_SYM);
+		currentType = TYPE_BOOL_LIT;
 		break;
 	case INT_SYM:
 		Match(INT_SYM);
+		currentType = TYPE_INT_LIT;
 		break;
 	case FLOAT_SYM:
 		Match(FLOAT_SYM);
+		currentType = TYPE_FLOAT_LIT;
 		break;
 	case CHEESE_SYM:
 		CheeseType();
+		currentType = TYPE_CHEESE_LIT;
 		break;
 	default:
 		SyntaxError(NextToken(), "");
@@ -271,26 +274,21 @@ void Parser::MultOp()
 	}
 }
 
-void Parser::FactorTail(ExprRec& expr)
+void Parser::FactorTail(bool is_assign)//ExprRec& expr)
 {
-	ExprRec leftOp, rightOp;
-	OpRec op;
-
-	switch (NextToken())
+    string old_label;
+    Token t = NextToken();
+	switch (t)
 	{
 	case MULT_OP:
 	case DIV_OP:
-		leftOp.kind = expr.kind;
-		leftOp.type = expr.type;
-		leftOp.name = expr.name;
-		leftOp.val = expr.val;
-		leftOp.fval = expr.fval;
-
-		MultOp();
-		code.ProcessOp(op); 
-		Primary(rightOp);
-		code.GenInfix(leftOp, op, rightOp, expr);
-		FactorTail(expr);
+        MultOp();
+        // code.ProcessOp();
+        old_label =  symbolTable.GetDataObject(currentVar).GetCurrentTempVar();
+        Primary(is_assign);
+        code.ProcessOperation_SymbolTable(currentVar,old_label,t);
+        // code.GenInfix();
+        FactorTail(is_assign);
 		break;
 	case RSTAPLE:
 	case RBANANA:
@@ -312,50 +310,68 @@ void Parser::FactorTail(ExprRec& expr)
 	}
 }
 
-void Parser::Primary(ExprRec& expr)
+void Parser::Primary(bool is_assign)
 {
-	switch (Token t = NextToken())
-	{
-	case FALSE_SYM:
-	case TRUE_SYM:
-	case INT_LIT:
-	case FLOAT_LIT:
-	case CHEESE_LIT:{
-		Literal();
-		switch (t) {
-			case FALSE_SYM:
-			case TRUE_SYM:
-				expr.type = BOOL;
-				break;
-			case INT_LIT:
-				expr.type = INT;
-				expr.val = atoi(scan.tokenBuffer.data());
-				break;
-			case FLOAT_LIT:
-				expr.type = FLOAT;
-				expr.fval = str_to_float(scan.tokenBuffer);
-				break;
-			case CHEESE_LIT:
-				expr.type = CHEESE;
-				expr.sval = scan.stringBuffer;
-				break;
-		}
-
-		code.ProcessLiteral(expr);
-		break;
-	}
-	case ID:
-		Variable(expr);
-		code.ProcessVar();
-		break;
-	case LBANANA:
-		Match(LBANANA);
-		Expression(expr);
-		Match(RBANANA);
-		break;
-	default:
-		SyntaxError(NextToken(), "");
-	}
+    if (is_assign) {
+        switch (NextToken()) {
+            case FALSE_SYM:
+            case TRUE_SYM:
+            case INT_LIT:
+            case FLOAT_LIT: {
+                symbolTable.UpdateEntry(currentVar, scan.tokenBuffer.data());
+                Literal();
+                ExprRec e;
+                code.ProcessLiteral(e);
+                break;
+            }
+            case CHEESE_LIT: {
+                symbolTable.UpdateEntry(currentVar, scan.stringBuffer.data());
+                Literal();
+                ExprRec t;
+                code.ProcessLiteral(t);
+                break;
+            }
+            case ID:
+				assign_to_var = currentVar;
+                Variable();
+				// Assign last accessed var with current var
+				code.Assign_Var2Var(assign_to_var, currentVar);
+                break;
+            case LBANANA:
+                Match(LBANANA);
+                Expression(is_assign);
+                Match(RBANANA);
+                break;
+            default:
+                SyntaxError(NextToken(), "");
+        }
+    }
+    else {
+        Token nex_token = NextToken();
+        switch (nex_token) {
+            case FALSE_SYM:
+            case TRUE_SYM:
+            case INT_LIT:
+            case FLOAT_LIT:
+            case CHEESE_LIT: {
+                Literal();
+                code.Shout(nex_token);
+                break;
+            }
+            case ID: {
+                Variable();
+                code.Shout_Variable(currentVar);
+                break;
+            }
+            case LBANANA:
+                Match(LBANANA);
+                Expression(is_assign);
+                Match(RBANANA);
+                break;
+            default:
+                SyntaxError(NextToken(), "");
+        }
+    }
 }
 
 void Parser::AddOp()
@@ -373,27 +389,21 @@ void Parser::AddOp()
 	}
 }
 
-void Parser::ExprTail(ExprRec& expr)
+void Parser::ExprTail(bool is_assign)
 {
-	ExprRec leftOp, rightOp;
-	OpRec op;
-
-	switch (NextToken())
+    string old_label;
+    Token t = NextToken();
+	switch (t)
 	{
 	case PLUS_OP:
 	case MINUS_OP:
-		leftOp.kind = expr.kind;
-		leftOp.type = expr.type;
-		leftOp.name = expr.name;
-		leftOp.val = expr.val;
-		leftOp.fval = expr.fval;
-
 		AddOp();
-		code.ProcessOp(op);
-		Factor(rightOp);
-		code.GenInfix(leftOp, op, rightOp, expr);
-		ExprTail(expr);
-
+		// code.ProcessOp();
+        old_label =  symbolTable.GetDataObject(currentVar).GetCurrentTempVar();
+		Factor(is_assign);
+        code.ProcessOperation_SymbolTable(currentVar,old_label,t);
+		// code.GenInfix();
+		ExprTail(is_assign);
 		break;
 	case RSTAPLE:
 	case RBANANA:
@@ -413,11 +423,10 @@ void Parser::ExprTail(ExprRec& expr)
 	}
 }
 
-
-void Parser::Factor(ExprRec& expr)
+void Parser::Factor(bool is_assign)// ExprRec& expr)
 {
-	Primary(expr);
-	FactorTail(expr);
+	Primary(is_assign);
+	FactorTail(is_assign);
 }
 
 void Parser::RelOp()
@@ -450,7 +459,7 @@ void Parser::RelOp()
 	}
 }
 
-void Parser::CondTail(OpRec& op, ExprRec& expr)
+void Parser::CondTail()
 {
 	switch (NextToken())
 	{
@@ -462,8 +471,8 @@ void Parser::CondTail(OpRec& op, ExprRec& expr)
 	case EQ_OP2:
 	case NE_OP:
 		RelOp();
-		code.ProcessOp(op);
-		Expression(expr);
+		// code.ProcessOp();
+		Expression(false);
 		break;
 	case RBANANA:
 	case SEMICOLON:
@@ -480,7 +489,7 @@ void Parser::IntListTail()
 	case COMMA:
 		Match(COMMA);
 		Match(INT_LIT);
-		code.IntAppend();
+		// code.IntAppend();
 		IntListTail();
 		break;
 	case COLON:
@@ -493,7 +502,7 @@ void Parser::IntListTail()
 void Parser::IntList()
 {
 	Match(INT_LIT);
-	code.IntAppend();
+	// code.IntAppend();
 	IntListTail();
 }
 
@@ -518,7 +527,7 @@ void Parser::Case()
 	IntList();
 	Match(COLON);
 	StmtList();
-	code.CaseEnd();
+	// code.CaseEnd();
 }
 
 void Parser::CaseList()
@@ -529,13 +538,11 @@ void Parser::CaseList()
 
 void Parser::ForAssign()
 {
-	ExprRec expr;
-
-	Variable(expr);
-	code.ProcessVar();
+	Variable();
+	// code.ProcessVar();
 	Match(ASSIGN_OP);
-	Expression(expr);
-	code.ForAssign();
+	Expression(false);
+	// code.ForAssign();
 }
 
 void Parser::ElseClause()
@@ -544,7 +551,7 @@ void Parser::ElseClause()
 	{
 	case ELSE_SYM:
 		Match(ELSE_SYM);
-		code.IfElse();
+		// code.IfElse();
 		StmtList();
 		break;
 	case END_SYM:
@@ -554,14 +561,11 @@ void Parser::ElseClause()
 	}
 }
 
-void Parser::Condition(ExprRec& expr)
+void Parser::Condition()
 {
-	ExprRec leftOp, rightOp;
-	OpRec op;
-
-	Expression(leftOp);
-	CondTail(op, rightOp);
-	code.SetCondition(leftOp, op, rightOp, expr);
+	Expression(false);
+	CondTail();
+	// code.SetCondition();
 }
 
 void Parser::VarDecs()
@@ -574,95 +578,84 @@ void Parser::VarDecs()
 
 void Parser::SelectStmt()
 {
-	ExprRec expr;
-
 	Match(SELECT_SYM);
 	Match(LBANANA);
-	Expression(expr);
+	Expression(false);
 	Match(RBANANA);
-	code.SelectBegin();
+	// code.SelectBegin();
 	CaseList();
 	Match(OTHERWISE_SYM);
-	code.Otherwise();
+	// code.Otherwise();
 	Match(COLON);
 	StmtList();
-	code.CaseEnd();
+	// code.CaseEnd();
 	Match(END_SYM);
-	code.SelectEnd();
+	// code.SelectEnd();
 }
 
 void Parser::ForStmt()
 {
-	ExprRec expr;
-
 	Match(FOR_SYM);
 	Match(LBANANA);
 	ForAssign();
 	Match(SEMICOLON);
-	Condition(expr);
-	code.ForBegin();
+	Condition();
+	// code.ForBegin();
 	Match(SEMICOLON);
 	ForAssign();
-	code.ForUpdate();
+	// code.ForUpdate();
 	Match(RBANANA);
 	StmtList();
 	Match(END_SYM);
-	code.ForEnd();
+	// code.ForEnd();
 }
 
 void Parser::WhileStmt()
 {
-	ExprRec expr;
-
 	Match(WHILE_SYM);
 	Match(LBANANA);
-	Condition(expr);
+	Condition();
 	Match(RBANANA);
-	code.WhileBegin();
+	// code.WhileBegin();
 	StmtList();
 	Match(END_SYM);
-	code.WhileEnd();
+	// code.WhileEnd();
 }
 
 void Parser::LoopStmt()
 {
-	ExprRec expr;
-
 	Match(DO_SYM);
-	code.LoopBegin();
+	// code.LoopBegin();
 	StmtList();
 	Match(UNTIL_SYM);
 	Match(LBANANA);
-	Condition(expr);
+	Condition();
 	Match(RBANANA);
-	code.LoopEnd();
+	// code.LoopEnd();
 	Match(SEMICOLON);
 }
 
 void Parser::IfStmt()
 {
-	ExprRec expr;
-
 	Match(IF_SYM);
 	Match(LBANANA);
-	Condition(expr);
+	Condition();
 	Match(RBANANA);
-	code.IfThen();
+	// code.IfThen();
 	StmtList();
 	ElseClause();
 	Match(END_SYM);
-	code.IfEnd();
+	// code.IfEnd();
 }
 
-void Parser::ItemListTail(ExprRec& expr)
+void Parser::ItemListTail(ExprRec& expr, bool is_assign)
 {
 	switch (NextToken())
 	{
 	case COMMA:
 		Match(COMMA);
-		Expression(expr);
-		code.Shout(expr);
-		ItemListTail(expr);
+		Expression(is_assign);
+		ItemListTail(expr, is_assign);
 		break;
 	case SEMICOLON:
 		break;
@@ -671,24 +664,24 @@ void Parser::ItemListTail(ExprRec& expr)
 	}
 }
 
-void Parser::ItemList()//ExprRec& expr) 
+void Parser::ItemList(bool is_assign)//ExprRec& expr)
 {
 	ExprRec expr;
 
-	Expression(expr);
-	code.Shout(expr);
-	ItemListTail(expr);
+
+	Expression(is_assign);
+
+    cout << "ITEM LIST" << endl;
+	ItemListTail(expr, is_assign);
 }
 
 void Parser::VariableTail()
 {
-	ExprRec expr;
-
 	switch (NextToken())
 	{
 	case LSTAPLE:
 		Match(LSTAPLE);
-		Expression(expr);
+		Expression(false);
 		Match(RSTAPLE);
 		break;
 	case RSTAPLE:
@@ -714,16 +707,15 @@ void Parser::VariableTail()
 	}
 }
 
-void Parser::VarListTail(ExprRec& expr)
+void Parser::VarListTail()
 {
 	switch (NextToken())
 	{
 	case COMMA:
 		Match(COMMA);
-		Variable(expr);
-		code.ProcessVar();
-		code.Listen(expr);
-		VarListTail(expr);
+		Variable();
+        code.Listen(currentVar);
+		VarListTail();
 		break;
 	case SEMICOLON:
 		break;
@@ -732,29 +724,26 @@ void Parser::VarListTail(ExprRec& expr)
 	}
 }
 
-void Parser::VarList(ExprRec& expr)
+void Parser::VarList()
 {
-	Variable(expr);
-	code.ProcessVar(expr);
-	code.Listen(expr);
-	VarListTail(expr);
+	Variable();
+    code.Listen(currentVar);
+	VarListTail();
 }
 
 void Parser::InitList()
 {
-	ExprRec expr;
-
-	Expression(expr);
+	Expression(false);
 	InitTail();
 }
 
-void Parser::Expression(ExprRec& expr)// ExprRec& expr)
+void Parser::Expression(bool is_assign)
 {
-	Factor(expr);
-	ExprTail(expr);
+	Factor(is_assign);
+	ExprTail(is_assign);
 }
 
-void Parser::AssignTail(ExprRec& expr)
+void Parser::AssignTail()
 {
 	switch (NextToken())
 	{
@@ -765,7 +754,7 @@ void Parser::AssignTail(ExprRec& expr)
 	case INT_LIT:
 	case FLOAT_LIT:
 	case CHEESE_LIT:
-		Expression(expr);
+		Expression(true);
 		break;
 	case LMUSTACHE:
 		Match(LMUSTACHE);
@@ -777,43 +766,40 @@ void Parser::AssignTail(ExprRec& expr)
 	}
 }
 
-void Parser::Variable(ExprRec& expr)
+void Parser::Variable()
 {
 	Match(ID);
+	currentVar = scan.tokenBuffer.data();
 	VariableTail();
 }
 
 void Parser::BreakStmt()
 {
 	Match(BREAK_SYM);
-	code.Break();
+	// code.Break();
 	Match(SEMICOLON);
 }
 
-void Parser::ShoutStmt(ExprRec& expr)
+void Parser::ShoutStmt(const ExprRec& expr)
 {
 	Match(SHOUT_SYM);
-	ItemList(/*expr*/);
+	ItemList(false);
 	code.NewLine();
 	Match(SEMICOLON);
 }
 
-void Parser::ListenStmt(ExprRec& expr)
+void Parser::ListenStmt()
 {
 	Match(LISTEN_SYM);
-	VarList(expr);
+	VarList();
 	Match(SEMICOLON);
 }
 
 void Parser::AssignStmt()
 {
-	ExprRec expr, expr2;
-
-	Variable(expr);
-	code.ProcessVar();
+	Variable(); // update current var
 	Match(ASSIGN_OP);
-	AssignTail(expr2);
-	code.Assign(expr, expr2);
+	AssignTail();
 	Match(SEMICOLON);
 }
 
@@ -844,7 +830,7 @@ void Parser::StructStmt()
 	}
 }
 
-void Parser::SimpleStmt(ExprRec& expr)
+void Parser::SimpleStmt(const ExprRec& expr)
 {
 	switch (NextToken())
 	{
@@ -852,7 +838,7 @@ void Parser::SimpleStmt(ExprRec& expr)
 		AssignStmt();
 		break;
 	case LISTEN_SYM:
-		ListenStmt(expr);
+		ListenStmt();
 		break;
 	case SHOUT_SYM:
 		ShoutStmt(expr);
@@ -894,26 +880,28 @@ void Parser::StmtTail()
 	}
 }
 
-void Parser::Statement() {
-	switch (NextToken()) {
-		case BREAK_SYM:
-		case LISTEN_SYM:
-		case SHOUT_SYM:
-		case ID:{
-			ExprRec expr;
-			SimpleStmt(expr);
-			break;
-		}
-		case DECS_SYM:
-		case DO_SYM:
-		case FOR_SYM:
-		case IF_SYM:
-		case SELECT_SYM:
-		case WHILE_SYM:
-			StructStmt();
-			break;
-		default:
-			SyntaxError(NextToken(), "");
+void Parser::Statement()
+{
+	ExprRec expr;
+
+	switch (NextToken())
+	{
+	case BREAK_SYM:
+	case LISTEN_SYM:
+	case SHOUT_SYM:
+	case ID:
+		SimpleStmt(expr);
+		break;
+	case DECS_SYM:
+	case DO_SYM:
+	case FOR_SYM:
+	case IF_SYM:
+	case SELECT_SYM:
+	case WHILE_SYM:
+		StructStmt();
+		break;
+	default:
+		SyntaxError(NextToken(), "");
 	}
 }
 

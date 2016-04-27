@@ -1,0 +1,64 @@
+
+   SAM 2016 Assembler Listing
+
+   April 27, 2016 at 8:55 A.M.
+   SOURCE FILE: test.asm
+
+        LN    LC
+         0     0: LDA       R15,VARS
+         1     4: LD    R7,L1T0
+         2     8: IA    R7,L1T1
+         3     C: STO   R7,L1T1
+         4    10: LD    R7,L1T1
+         5    14: IA    R7,L1T2
+         6    18: STO   R7,L1T2
+         7    1C: WRI       L1T2
+         8    20: WRNL      
+         9    22: LD        R0,L2T0
+        10    26: STO       R0,L1T2
+        11    2A: LD        R0,L3T0
+        12    2E: STO       R0,L2T0
+        13    32: LD    R7,L2T0
+        14    36: IA    R7,L3T0
+        15    3A: STO   R7,L3T0
+        16    3E: LD        R0,L2T0
+        17    42: STO       R0,L3T0
+        18    46: LD    R7,L3T0
+        19    4A: IA    R7,L2T0
+        20    4E: STO   R7,L2T0
+        21    52: HALT      
+        22    54: % Data Area ------------
+        23    54: % ----------------------
+        24    54: LABEL    LBL1
+        25    54: INT   0
+        26    56: LABEL    L1T0
+        27    56: INT       1
+        28    58: LABEL    L1T1
+        29    58: INT       3
+        30    5A: LABEL    L1T2
+        31    5A: INT       4
+        32    5C: LABEL    LBL2
+        33    5C: INT   0
+        34    5E: LABEL    L2T0
+        35    5E: INT       3
+        36    60: LABEL    LBL3
+        37    60: INT   0
+        38    62: LABEL    L3T0
+        39    62: INT       5
+        40    64: 
+        41    64: LABEL     VARS
+        42    64: SKIP      2
+
+
+MACC Memory Hexadecimal Dump
+
+ ADDR |   0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
+------+----------------------------------------------------------------
+    0 |  9F  90  00  64  8B  90  00  56  0B  90  00  58  93  90  00  58
+   10 |  8B  90  00  58  0B  90  00  5A  93  90  00  5A  D0  10  00  5A
+   20 |  D5  80  88  10  00  5E  90  10  00  5A  88  10  00  62  90  10
+   30 |  00  5E  8B  90  00  5E  0B  90  00  62  93  90  00  62  88  10
+   40 |  00  5E  90  10  00  62  8B  90  00  62  0B  90  00  5E  93  90
+   50 |  00  5E  F8  00  00  00  00  01  00  03  00  04  00  00  00  03
+   60 |  00  00  00  05  00  00
+

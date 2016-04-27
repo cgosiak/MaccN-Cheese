@@ -1,1 +1,14 @@
-shout 0, 1, 2;
+decs {
+	int: a, b, c;
+	float: t;
+	cheese: y, z;
+}
+
+b = 3;
+c = 5;
+
+a = 1 + 3 + 4;
+shout a;
+
+a =  b + c + b;                                            
+//shout a;

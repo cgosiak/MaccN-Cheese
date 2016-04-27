@@ -137,24 +137,46 @@ Token Scanner::GetNextToken()
 			}
 			return CheckReserved();
 		}
-		else if (isdigit(currentChar) || currentChar == '.') {                // integer literal
+		else if (isdigit(currentChar)) {                // integer literal
 			BufferChar(currentChar);
 			c = sourceFile.peek();
-			while (isdigit(c) || c == '.') {
+			while (isdigit(c)) {
 				currentChar = NextChar();
 				BufferChar(currentChar);
 				c = sourceFile.peek();
-				if (currentChar == '.') {
+			}
+			if (c == '.') {//check if float
+				currentChar = NextChar();
+				c = sourceFile.peek();
+
+				if (!isdigit(c))//digit must appear after decimal
+					LexicalError(currentChar);
+			
+				BufferChar(currentChar);
+				while (isdigit(c)) {
 					currentChar = NextChar();
 					BufferChar(currentChar);
 					c = sourceFile.peek();
+				}
+				if (c == 'e') {//check for scientific notation
+					currentChar = NextChar();
+					c = sourceFile.peek();
+					if (c == '+' || c == '-') {//can be in form e+n, or e-n
+						BufferChar(currentChar);
+						currentChar = NextChar();
+						c = sourceFile.peek();
+					}
+					if (!isdigit(c)) {//sign must be followed by number
+						LexicalError(currentChar);
+					}
+					BufferChar(currentChar);
 					while (isdigit(c)) {
 						currentChar = NextChar();
 						BufferChar(currentChar);
 						c = sourceFile.peek();
 					}
-					return FLOAT_LIT;					
 				}
+				return FLOAT_LIT;
 			}
 			return INT_LIT;
 		}
@@ -164,7 +186,6 @@ Token Scanner::GetNextToken()
 		else if (currentChar == '+') return PLUS_OP;
 		else if (currentChar == '-') return MINUS_OP;
 		else if (currentChar == '*') return MULT_OP;
-		else if (currentChar == '/') return DIV_OP;
 		else if (currentChar == '<') 
 			if (sourceFile.peek() == '=') {//  <= operator
 				currentChar = NextChar();
@@ -212,10 +233,19 @@ Token Scanner::GetNextToken()
 			else
 				LexicalError(currentChar);
 		else if (currentChar == '/')  
-			if (sourceFile.peek() == '/') // comment
-				do  // skip comment
-					currentChar = NextChar();
-				while (currentChar != '\n');
+			if (sourceFile.peek() == '/') {// comment
+                do  // skip comment
+                    currentChar = NextChar();
+                while (currentChar != '\n' && currentChar != -52);
+            }
+            else if (sourceFile.peek() == ':') {// comment
+                currentChar = NextChar();
+                do  // skip comment
+                    currentChar = NextChar();
+                while (currentChar != ':' && sourceFile.peek() != '/');
+                currentChar = NextChar();
+                currentChar = NextChar();
+            }
 			else
 			{
 				BufferChar(currentChar);      // division operator
@@ -232,10 +262,17 @@ Token Scanner::GetNextToken()
 					return CHEESE_LIT;
 				}
 				stringBuffer += currentChar;
+                // BufferChar(currentChar);
 			}
 			while (c != '\n');
 		else
 			LexicalError(currentChar);
 	} // end while
 	return EOF_SYM;
+}
+
+string Scanner::GetTokenString(int input) {
+	string value = "";
+
+	return value;
 }
