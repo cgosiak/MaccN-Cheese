@@ -76,6 +76,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\Macc n%27 Cheese\Macc n%27 Cheese\Macc n%27 Cheese\ConditionalEntry.cpp" />
     <ClCompile Include="..\..\..\Macc n%27 Cheese\Macc n%27 Cheese\Macc n%27 Cheese\DataEntry.cpp" />
     <ClCompile Include="..\..\..\Macc n%27 Cheese\Macc n%27 Cheese\Macc n%27 Cheese\SymbolTable.cpp" />
     <ClCompile Include="..\..\Macc n%27 Cheese\Macc n%27 Cheese\mnc.cpp" />
@@ -84,6 +85,7 @@
     <ClCompile Include="..\..\Macc n%27 Cheese\Macc n%27 Cheese\mncscan.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\Macc n%27 Cheese\Macc n%27 Cheese\Macc n%27 Cheese\ConditionalEntry.h" />
     <ClInclude Include="..\..\..\Macc n%27 Cheese\Macc n%27 Cheese\Macc n%27 Cheese\DataEntry.h" />
     <ClInclude Include="..\..\..\Macc n%27 Cheese\Macc n%27 Cheese\Macc n%27 Cheese\SymbolTable.h" />
     <ClInclude Include="..\..\Macc n%27 Cheese\Macc n%27 Cheese\mnccode.h" />

@@ -40,7 +40,7 @@ int main() {
 	// sourceName = "/home/gosi1cal/Desktop/MaccNCheLion/test"; // school
 	// sourceName = "/home/gosi1cal/Desktop/MaccNCheLion/Assign03"; // school
 	// sourceName = "/home/caleb/Desktop/MaccNCheLion/test"; // home
-	sourceName = "test1";
+	sourceName = "test";
 
     sam_name = sourceName;
 
@@ -79,7 +79,9 @@ int main() {
 
 	//	cin.get();
 
-    string ter = "sam \"" + sam_name + "\"";
+    // string ter = "/home/gosi1cal/Desktop/MaccNCheLion/sam \"" + sam_name + "\"";
+    // string ter = "/home/caleb/Desktop/MaccNCheLion/sam \"" + sam_name + "\"";
+	string ter = "sam \"" + sam_name + "\"";
     system(ter.c_str());
 
 	return 0;

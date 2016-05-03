@@ -87,11 +87,11 @@ void Scanner::ClearBuffer()
 void Scanner::LexicalError(char& c)
 {
 	cout << " *** Lexical Error: '" << c
-		<< "' ignored at position " << int(lineBuffer.size())
-		<< " on line #" << lineNumber+1 << '.' << endl;
+	<< "' ignored at position " << int(lineBuffer.size())
+	<< " on line #" << lineNumber+1 << '.' << endl;
 	listFile << " *** Lexical Error: '" << c
-		<< "' ignored at position " << int(lineBuffer.size())
-		<< " on line #" << lineNumber+1 << '.' << endl;
+	<< "' ignored at position " << int(lineBuffer.size())
+	<< " on line #" << lineNumber+1 << '.' << endl;
 	c = NextChar();
 }
 
@@ -151,7 +151,7 @@ Token Scanner::GetNextToken()
 
 				if (!isdigit(c))//digit must appear after decimal
 					LexicalError(currentChar);
-			
+
 				BufferChar(currentChar);
 				while (isdigit(c)) {
 					currentChar = NextChar();
@@ -186,22 +186,22 @@ Token Scanner::GetNextToken()
 		else if (currentChar == '+') return PLUS_OP;
 		else if (currentChar == '-') return MINUS_OP;
 		else if (currentChar == '*') return MULT_OP;
-		else if (currentChar == '<') 
-			if (sourceFile.peek() == '=') {//  <= operator
-				currentChar = NextChar();
-				return LE_OP;
-			}
-			else
-				return LT_OP;
+		else if (currentChar == '<')
+		if (sourceFile.peek() == '=') {//  <= operator
+			currentChar = NextChar();
+			return LE_OP;
+		}
+		else
+			return LT_OP;
 		else if (currentChar == '[') return LSTAPLE;
 		else if (currentChar == ']') return RSTAPLE;
-		else if (currentChar == '>') 
-			if (sourceFile.peek() == '=') {//  >= operator
-				currentChar = NextChar();
-				return GE_OP;
-			}
-			else
-				return GT_OP;
+		else if (currentChar == '>')
+		if (sourceFile.peek() == '=') {//  >= operator
+			currentChar = NextChar();
+			return GE_OP;
+		}
+		else
+			return GT_OP;
 		else if (currentChar == '(')
 			return LBANANA;
 		else if (currentChar == ')')
@@ -215,42 +215,42 @@ Token Scanner::GetNextToken()
 			return PLUS_OP;
 		}
 		else if (currentChar == '=')
-			if (sourceFile.peek() == '=') {                 // == operator
-				currentChar = NextChar();
-				return EQ_OP1;
-			}
-			else
-				return ASSIGN_OP;
+		if (sourceFile.peek() == '=') {                 // == operator
+			currentChar = NextChar();
+			return EQ_OP1;
+		}
+		else
+			return ASSIGN_OP;
 		else if (currentChar == '!')
-			if (sourceFile.peek() == '!') {	// !! operator
+		if (sourceFile.peek() == '!') {	// !! operator
+			currentChar = NextChar();
+			return EQ_OP2;
+		}
+		else if (sourceFile.peek() == '=') {// != operator
+			currentChar = NextChar();
+			return NE_OP;
+		}
+		else
+			LexicalError(currentChar);
+		else if (currentChar == '/')
+		if (sourceFile.peek() == '/') {// comment
+			do  // skip comment
 				currentChar = NextChar();
-				return EQ_OP2;
-			}
-			else if (sourceFile.peek() == '=') {// != operator
+			while (currentChar != '\n' && currentChar != -52);
+		}
+		else if (sourceFile.peek() == ':') {// comment
+			currentChar = NextChar();
+			do  // skip comment
 				currentChar = NextChar();
-				return NE_OP;
-			}
-			else
-				LexicalError(currentChar);
-		else if (currentChar == '/')  
-			if (sourceFile.peek() == '/') {// comment
-                do  // skip comment
-                    currentChar = NextChar();
-                while (currentChar != '\n' && currentChar != -52);
-            }
-            else if (sourceFile.peek() == ':') {// comment
-                currentChar = NextChar();
-                do  // skip comment
-                    currentChar = NextChar();
-                while (currentChar != ':' && sourceFile.peek() != '/');
-                currentChar = NextChar();
-                currentChar = NextChar();
-            }
-			else
-			{
-				BufferChar(currentChar);      // division operator
-				return DIV_OP;
-			}
+			while (currentChar != ':' && sourceFile.peek() != '/');
+			currentChar = NextChar();
+			currentChar = NextChar();
+		}
+		else
+		{
+			BufferChar(currentChar);      // division operator
+			return DIV_OP;
+		}
 		else if (currentChar == '"')		// string character
 			do {
 				currentChar = NextChar();
@@ -262,7 +262,7 @@ Token Scanner::GetNextToken()
 					return CHEESE_LIT;
 				}
 				stringBuffer += currentChar;
-                // BufferChar(currentChar);
+				// BufferChar(currentChar);
 			}
 			while (c != '\n');
 		else

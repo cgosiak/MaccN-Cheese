@@ -9,7 +9,7 @@
 				the MACC2 virtual computer.
  _______________________________________________________________
 
- April 27, 2016 at 08:55 AM
+ May 03, 2016 at 11:52 AM
  Source file: test.mnc
 
  LINE #
@@ -22,43 +22,64 @@
      6  
      7  b = 3;
      8  c = 5;
-     9  
-                    LD    R7,L1T0
-                    IA    R7,L1T1
-                    STO   R7,L1T1
-                    LD    R7,L1T1
-                    IA    R7,L1T2
-                    STO   R7,L1T2
-    10  a = 1 + 3 + 4;
-                    WRI       L1T2
-                    WRNL      
-    11  shout a;
-    12  
-                    LD        R0,L2T0
+     9  a = 6;
+    10  
+                    LD        R0,L1T0
+                    STO       R0,L1T1
+                    LD        R0,L1T1
                     STO       R0,L1T2
-                    LD        R0,L3T0
-                    STO       R0,L2T0
-                    LD    R7,L2T0
-                    IA    R7,L3T0
-                    STO   R7,L3T0
+                    LD        R0,L1T2
+                    STO       R0,L1T3
+                    LD    R7,L1T2
+                    IA    R7,L1T3
+                    STO   R7,L1T3
                     LD        R0,L2T0
-                    STO       R0,L3T0
-                    LD    R7,L3T0
-                    IA    R7,L2T0
-                    STO   R7,L2T0
-    13  a =  b + c + b;                                            
-    14  //shout a;Ì
+                    STO       R0,L1T4
+                    LD    R7,L1T3
+                    IM    R7,L1T4
+                    STO   R7,L1T4
+                    LD    R7,L1T1
+                    IS    R7,L1T4
+                    STO   R7,L1T4
+    11  a = (a - ((a + a) * b));
+    12  
+                    WRI       L1T4
+                    WRNL      
+    13  shout a;
+                    LD        R0,L1T4
+                    STO       R0,L1T5
+                    LD    R7,L1T5
+                    IM    R7,L1T6
+                    STO   R7,L1T6
+    14  a = a * 2;
+                    WRI       L1T6
+                    WRNL      
+    15  shout a;                 
+    16  
+                    WRI       L1T6
+                    WRI       L2T0
+                    WRI       L3T0
+                    WRNL      
+    17  shout a, b, c;Ì
                     HALT      
                     % Data Area ------------
 % ----------------------
 LABEL    LBL1
 INT   0
 LABEL    L1T0
-INT       1
+INT       6
 LABEL    L1T1
-INT       3
+INT       
 LABEL    L1T2
-INT       4
+INT       
+LABEL    L1T3
+INT       
+LABEL    L1T4
+INT       
+LABEL    L1T5
+INT       
+LABEL    L1T6
+INT       2
 LABEL    LBL2
 INT   0
 LABEL    L2T0

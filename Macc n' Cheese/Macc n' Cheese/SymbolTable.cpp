@@ -11,18 +11,23 @@ SymbolTable::SymbolTable() {
 
 void SymbolTable::AddEntry(std::string id, DataTypes type) {
     std::string type_string;
+    std::string default_value;
     switch (type) {
         case TYPE_CHEESE_LIT:
             type_string = "CHEESE_LIT";
+            default_value = "";
             break;
         case TYPE_FLOAT_LIT:
             type_string = "FLOAT_LIT";
+            default_value = "0.00";
             break;
         case TYPE_INT_LIT:
             type_string = "INT_LIT";
+            default_value = "0";
             break;
         case TYPE_BOOL_LIT:
             type_string = "BOOL_LIT";
+            default_value = "FALSE";
             break;
         default:
         std::cerr << "Undefined type error" << std::endl;
@@ -44,6 +49,7 @@ void SymbolTable::AddEntry(std::string id, DataTypes type) {
         std::cout << "Added entry! Type: " << type_string << std::endl;
         DataEntry my_entry(id, type, lbl_name, total_entries);
         table_entries.push_back(my_entry);
+        // table_entries[SymbolTable::GetEntry(id)].AssignValue(default_value);
     }
 }
 
@@ -112,4 +118,42 @@ void SymbolTable::ReserveNewLabel(std::string id) {
     else {
         //some error
     }
+}
+
+ConditionalEntry SymbolTable::CreateConditional() {
+    std::string label_name = "STM" + std::to_string(total_conditonals);
+    cur_jmp_lbl = "JMP" + std::to_string(total_conditonals);
+    cur_end_lbl = "END" + std::to_string(total_conditonals);
+    cur_stmt_label = label_name;
+    ConditionalEntry my_entry(label_name,cur_jmp_lbl);
+    cur_cond = &my_entry;
+    total_conditonals++;
+    return my_entry;
+}
+
+void SymbolTable::CloseConditional() {
+    cur_cond->AddCommand("JMP    " + cur_end_lbl);
+    cur_cond->AddCommand("LABEL    " + cur_jmp_lbl);
+    conditional_entries.push_back(*cur_cond);
+}
+
+std::string SymbolTable::GetCurrentConditionalLabel() {
+    return cur_stmt_label;
+}
+
+ConditionalEntry SymbolTable::GetCondObject(std::string id) {
+    ConditionalEntry *entry;
+    std::cout << "Compare: " << id << " to " << conditional_entries[0].GetLabelName() << std::endl;
+    for (int i = 0; i < conditional_entries.size(); ++i) {
+        std::cout << "Compare: " << id << " to " << conditional_entries[i].GetLabelName() << std::endl;
+        if (conditional_entries[i].GetLabelName() == id) {
+            std::cout << "Found object!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
+            entry = &conditional_entries[i];
+            return *entry;
+        }
+    }
+}
+
+std::string SymbolTable::CloseElse() {
+    return cur_end_lbl;
 }
