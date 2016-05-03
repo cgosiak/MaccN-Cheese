@@ -9,88 +9,61 @@
 				the MACC2 virtual computer.
  _______________________________________________________________
 
- May 03, 2016 at 11:52 AM
+ May 03, 2016 at 03:33 PM
  Source file: test.mnc
 
  LINE #
-                    LDA       R15,VARS
+                    LDA	R15,VARS
      1  decs {
      2  	int: a, b, c;
      3  	float: t;
      4  	cheese: y, z;
      5  }
      6  
-     7  b = 3;
-     8  c = 5;
-     9  a = 6;
-    10  
-                    LD        R0,L1T0
-                    STO       R0,L1T1
-                    LD        R0,L1T1
-                    STO       R0,L1T2
-                    LD        R0,L1T2
-                    STO       R0,L1T3
-                    LD    R7,L1T2
-                    IA    R7,L1T3
-                    STO   R7,L1T3
-                    LD        R0,L2T0
-                    STO       R0,L1T4
-                    LD    R7,L1T3
-                    IM    R7,L1T4
-                    STO   R7,L1T4
-                    LD    R7,L1T1
-                    IS    R7,L1T4
-                    STO   R7,L1T4
-    11  a = (a - ((a + a) * b));
-    12  
-                    WRI       L1T4
-                    WRNL      
-    13  shout a;
-                    LD        R0,L1T4
-                    STO       R0,L1T5
-                    LD    R7,L1T5
-                    IM    R7,L1T6
-                    STO   R7,L1T6
-    14  a = a * 2;
-                    WRI       L1T6
-                    WRNL      
-    15  shout a;                 
-    16  
-                    WRI       L1T6
-                    WRI       L2T0
-                    WRI       L3T0
-                    WRNL      
-    17  shout a, b, c;Ì
-                    HALT      
+     7  a = 10;
+     8  
+     9  while (a > 0)
+    10  	a = a - 1;
+    11  	shout "candy", a;
+                    LABEL	STM0
+LD	R4, L1T0
+LD	R5, L7T0
+IC	R4, R5
+JGT	JMP0
+JMP	END0
+LABEL	JMP0
+LD	R0, L1T0
+STO	R0, L1T0
+LD	R7, L1T0
+IS	R7, L1T1
+STO	R7, L1T0
+WRST	L8T0
+WRI	L1T1
+WRNL	
+JMP	STM0
+LABEL	END0
+
+    12  end         Ì
+                    HALT	
                     % Data Area ------------
 % ----------------------
-LABEL    LBL1
-INT   0
-LABEL    L1T0
-INT       6
-LABEL    L1T1
-INT       
-LABEL    L1T2
-INT       
-LABEL    L1T3
-INT       
-LABEL    L1T4
-INT       
-LABEL    L1T5
-INT       
-LABEL    L1T6
-INT       2
-LABEL    LBL2
-INT   0
-LABEL    L2T0
-INT       3
-LABEL    LBL3
-INT   0
-LABEL    L3T0
-INT       5
+LABEL	LBL1
+INT	0
+LABEL	L1T0
+INT	10
+LABEL	L1T1
+INT	1
+LABEL	LBL7
+INT	0
+LABEL	L7T0
+INT	0
+LABEL	LBL8
+SKIP	50
+LABEL	L8T0
+STRING	"candy"
 
-                    LABEL     VARS
-                    SKIP      2
+                    LABEL	VARS
+                    SKIP	2
 
 
  _____________________________________________

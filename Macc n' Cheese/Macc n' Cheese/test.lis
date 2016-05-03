@@ -1,85 +1,61 @@
 
    SAM 2016 Assembler Listing
 
-   May 3, 2016 at 11:52 A.M.
+   May 3, 2016 at 3:33 P.M.
    SOURCE FILE: test.asm
 
         LN    LC
-         0     0: LDA       R15,VARS
-         1     4: LD        R0,L1T0
-         2     8: STO       R0,L1T1
-         3     C: LD        R0,L1T1
-         4    10: STO       R0,L1T2
-         5    14: LD        R0,L1T2
-         6    18: STO       R0,L1T3
-         7    1C: LD    R7,L1T2
-         8    20: IA    R7,L1T3
-         9    24: STO   R7,L1T3
-        10    28: LD        R0,L2T0
-        11    2C: STO       R0,L1T4
-        12    30: LD    R7,L1T3
-        13    34: IM    R7,L1T4
-        14    38: STO   R7,L1T4
-        15    3C: LD    R7,L1T1
-        16    40: IS    R7,L1T4
-        17    44: STO   R7,L1T4
-        18    48: WRI       L1T4
-        19    4C: WRNL      
-        20    4E: LD        R0,L1T4
-        21    52: STO       R0,L1T5
-        22    56: LD    R7,L1T5
-        23    5A: IM    R7,L1T6
-        24    5E: STO   R7,L1T6
-        25    62: WRI       L1T6
-        26    66: WRNL      
-        27    68: WRI       L1T6
-        28    6C: WRI       L2T0
-        29    70: WRI       L3T0
-        30    74: WRNL      
-        31    76: HALT      
-        32    78: % Data Area ------------
-        33    78: % ----------------------
-        34    78: LABEL    LBL1
-        35    78: INT   0
-        36    7A: LABEL    L1T0
-        37    7A: INT       6
-        38    7C: LABEL    L1T1
-        39    7C: INT       
-        40    7E: LABEL    L1T2
-        41    7E: INT       
-        42    80: LABEL    L1T3
-        43    80: INT       
-        44    82: LABEL    L1T4
-        45    82: INT       
-        46    84: LABEL    L1T5
-        47    84: INT       
-        48    86: LABEL    L1T6
-        49    86: INT       2
-        50    88: LABEL    LBL2
-        51    88: INT   0
-        52    8A: LABEL    L2T0
-        53    8A: INT       3
-        54    8C: LABEL    LBL3
-        55    8C: INT   0
-        56    8E: LABEL    L3T0
-        57    8E: INT       5
-        58    90: 
-        59    90: LABEL     VARS
-        60    90: SKIP      2
+         0     0: LDA	R15,VARS
+         1     4: LABEL	STM0
+         2     4: LD	R4, L1T0
+         3     8: LD	R5, L7T0
+         4     C: IC	R4, R5
+         5     E: JGT	JMP0
+         6    12: JMP	END0
+         7    16: LABEL	JMP0
+         8    16: LD	R0, L1T0
+         9    1A: STO	R0, L1T0
+        10    1E: LD	R7, L1T0
+        11    22: IS	R7, L1T1
+        12    26: STO	R7, L1T0
+        13    2A: WRST	L8T0
+        14    2E: WRI	L1T1
+        15    32: WRNL	
+        16    34: JMP	STM0
+        17    38: LABEL	END0
+        18    38: 
+        19    38: HALT	
+        20    3A: % Data Area ------------
+        21    3A: % ----------------------
+        22    3A: LABEL	LBL1
+        23    3A: INT	0
+        24    3C: LABEL	L1T0
+        25    3C: INT	10
+        26    3E: LABEL	L1T1
+        27    3E: INT	1
+        28    40: LABEL	LBL7
+        29    40: INT	0
+        30    42: LABEL	L7T0
+        31    42: INT	0
+        32    44: LABEL	LBL8
+        33    44: SKIP	50
+        34    76: LABEL	L8T0
+        35    76: STRING	"candy"
+        36    7C: 
+        37    7C: LABEL	VARS
+        38    7C: SKIP	2
 
 
 MACC Memory Hexadecimal Dump
 
  ADDR |   0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
 ------+----------------------------------------------------------------
-    0 |  9F  90  00  90  88  10  00  7A  90  10  00  7C  88  10  00  7C
-   10 |  90  10  00  7E  88  10  00  7E  90  10  00  80  8B  90  00  7E
-   20 |  0B  90  00  80  93  90  00  80  88  10  00  8A  90  10  00  82
-   30 |  8B  90  00  80  1B  90  00  82  93  90  00  82  8B  90  00  7C
-   40 |  13  90  00  82  93  90  00  82  D0  10  00  82  D5  80  88  10
-   50 |  00  82  90  10  00  84  8B  90  00  84  1B  90  00  86  93  90
-   60 |  00  86  D0  10  00  86  D5  80  D0  10  00  86  D0  10  00  8A
-   70 |  D0  10  00  8E  D5  80  F8  00  00  00  00  06  00  00  00  00
-   80 |  00  00  00  00  00  00  00  02  00  00  00  03  00  00  00  05
-   90 |  00  00
+    0 |  9F  90  00  7C  8A  10  00  3C  8A  90  00  42  6A  05  B3  10
+   10 |  00  16  B0  10  00  38  88  10  00  3C  90  10  00  3C  8B  90
+   20 |  00  3C  13  90  00  3E  93  90  00  3C  D4  90  00  76  D0  10
+   30 |  00  3E  D5  80  B0  10  00  04  F8  00  00  00  00  0A  00  01
+   40 |  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+   50 |  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+   60 |  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00  00
+   70 |  00  00  00  00  00  00  63  61  6E  64  79  00  00  00
 

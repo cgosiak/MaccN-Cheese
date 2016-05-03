@@ -4,14 +4,9 @@ decs {
 	cheese: y, z;
 }
 
-b = 3;
-c = 5;
-a = 6;
+a = 10;
 
-a = (a - ((a + a) * b));
-
-shout a;
-a = a * 2;
-shout a;                 
-
-shout a, b, c;
+while (a > 0)
+	a = a - 1;
+	shout "candy", a;
+end         
