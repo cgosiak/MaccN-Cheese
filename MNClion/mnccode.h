@@ -36,6 +36,9 @@ class CodeGen {
 	/* _____________________________________________________________________________
 	*/
 
+	string update_lbl = "";
+	string replace_lbl = "";
+
 	void Start();
 	// Initializes the compiler.
 
@@ -103,6 +106,8 @@ class CodeGen {
     void Compare_Numbers_Else(string jump_lbl);
 
     void CloseCondition(string condition_name);
+
+	void CloseCondition();
 
 	void WriteExpr(const ExprRec & OutExpr);
 	// Produces the assembly code for writing the value of OutExpr.

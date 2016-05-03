@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <string>
 #include <sstream>
+#include <iomanip>
 
 DataEntry::DataEntry(std::string id, DataTypes type, std::string label_name, int lbl_used) {
     variable_name = id;
@@ -30,7 +31,7 @@ void DataEntry::AssignValue(std::string val) {
             }
             if (DataEntry::isInt(val)) {
                 value = val;
-                data_line = "INT   0";
+                data_line = "INT\t0";
             }
             else {
                 DataEntry::RaiseError_Assignment(val, "TYPE_INT_LIT");
@@ -42,7 +43,7 @@ void DataEntry::AssignValue(std::string val) {
             }
             if (DataEntry::isBool(val)) {
                 value = DataEntry::UpperCase(val);
-                data_line = "INT   0";
+                data_line = "INT\t0";
             }
             else {
                 DataEntry::RaiseError_Assignment(val, "TYPE_BOOL_LIT");
@@ -52,15 +53,37 @@ void DataEntry::AssignValue(std::string val) {
             // should technically never be an error, any grouping of characters can be viewed as a string
             //DataEntry::RaiseError_Assignment(val, TYPE_CHEESE_LIT);
             value = val;
-            data_line = "SKIP    " + std::to_string(string_reservation_space);
+            data_line = "SKIP\t" + std::to_string(string_reservation_space);
             break;
-        case TYPE_FLOAT_LIT:
+        case TYPE_FLOAT_LIT:{
             // DataEntry::RaiseError_Assignment(val, "TYPE_FLOAT_LIT");
             if (val == "") {
                 val = "0.0";
             }
-            data_line = "REAL   0.0";
+
+            auto pos = val.find('E');
+            if (pos != std::string::npos) {
+                std::string sf = val.substr(0, pos);
+                std::string se = val.substr(pos + 1, val.size() - pos);
+
+                std::stringstream ssf(sf);
+                std::stringstream sse(se);
+
+                double f, e;
+                ssf >> f;
+                sse >> e;
+
+                double o = f * pow(10, e);
+
+                std::stringstream out;
+
+                out << std::setprecision(12) << o;
+                val = out.str();
+            }
+
+            data_line = "REAL\t0.0";
             break;
+        }
         default:
             DataEntry::RaiseError_Assignment(val, "TYPE_NONE");
             break;
@@ -142,7 +165,7 @@ void DataEntry::AssignTempValue(std::string val) {
             }
             if (DataEntry::isInt(val)) {
                 value = val;
-                data_line = "INT   0";
+                data_line = "INT\t0";
             }
             else {
                 DataEntry::RaiseError_Assignment(val, "TYPE_INT_LIT");
@@ -173,7 +196,7 @@ void DataEntry::AssignTempValue(std::string val) {
             if (value.find(":") != std::string::npos) {
                 value = ReplaceAll(value,":","::");
             }
-            data_line = "STRING   \"\"";
+            data_line = "STRING\t\"\"";
             break;
         case TYPE_FLOAT_LIT:
             // DataEntry::RaiseError_Assignment(val, "TYPE_FLOAT_LIT");
@@ -181,7 +204,7 @@ void DataEntry::AssignTempValue(std::string val) {
                 val = "0.0";
             }
             value = val;
-            data_line = "REAL   0.0";
+            data_line = "REAL\t0.0";
             break;
         default:
             DataEntry::RaiseError_Assignment(val, "TYPE_NONE");
@@ -197,19 +220,19 @@ std::string DataEntry::GetTempLabels() {
     for (int i = 0; i < temps_used; ++i) {
         switch (temp_variables[i].GetType()) {
             case TYPE_CHEESE_LIT:
-                temps = temps + "LABEL    " + temp_variables[i].GetDataLabel() + "\nSTRING    \"" + temp_variables[i].GetValue() + "\"\n";
+                temps = temps + "LABEL\t" + temp_variables[i].GetDataLabel() + "\nSTRING\t\"" + temp_variables[i].GetValue() + "\"\n";
                 break;
             case TYPE_SPECIAL_CHEESE_LIT:
-                temps = temps + "LABEL    " + temp_variables[i].GetDataLabel() + "\nSKIP      "  + std::to_string(string_reservation_space) + "\n";
+                temps = temps + "LABEL\t" + temp_variables[i].GetDataLabel() + "\nSKIP\t"  + std::to_string(string_reservation_space) + "\n";
                 break;
             case TYPE_FLOAT_LIT:
-                temps = temps + "LABEL    " + temp_variables[i].GetDataLabel() + "\nREAL      " + temp_variables[i].GetValue() + "\n";
+                temps = temps + "LABEL\t" + temp_variables[i].GetDataLabel() + "\nREAL\t" + temp_variables[i].GetValue() + "\n";
                 break;
             case TYPE_BOOL_LIT:
-                temps = temps + "LABEL    " + temp_variables[i].GetDataLabel() + "\nINT       " + temp_variables[i].GetValue() + "\n";
+                temps = temps + "LABEL\t" + temp_variables[i].GetDataLabel() + "\nINT\t" + temp_variables[i].GetValue() + "\n";
                 break;
             case TYPE_INT_LIT:
-                temps = temps + "LABEL    " + temp_variables[i].GetDataLabel() + "\nINT       " + temp_variables[i].GetValue() + "\n";
+                temps = temps + "LABEL\t" + temp_variables[i].GetDataLabel() + "\nINT\t" + temp_variables[i].GetValue() + "\n";
                 break;
         }
     }
@@ -238,7 +261,8 @@ void DataEntry::ReserveSpace() {
     DataEntry new_data(variable_name, entry_type, temp_name, lbl);
     cur_temp_assigned = temp_name;
 
-    new_data.ReserveCheeseSpace();
+    if (entry_type == TYPE_CHEESE_LIT || entry_type == TYPE_SPECIAL_CHEESE_LIT)
+        new_data.ReserveCheeseSpace();
     temp_variables.push_back(new_data);
 
     entry_used = true;

@@ -283,13 +283,16 @@ void Parser::FactorTail(bool is_assign)//ExprRec& expr)
 	{
 	case MULT_OP:
 	case DIV_OP:
-        MultOp();
-        // code.ProcessOp();
-        old_label =  symbolTable.GetDataObject(currentVar).GetCurrentTempVar();
-        Primary(is_assign);
-        code.ProcessOperation_SymbolTable(currentVar,old_label,t);
-        // code.GenInfix();
-        FactorTail(is_assign);
+		MultOp();
+		// code.ProcessOp();
+		//  old_label =  symbolTable.GetDataObject(currentVar).GetCurrentTempVar();
+		old_label = symbolTable.GetDataObject(absolute_var).GetCurrentTempVar();
+		Primary(is_assign);
+		//  code.ProcessOperation_SymbolTable(currentVar,old_label,t);
+		code.ProcessOperation_SymbolTable(absolute_var, old_label, t);
+		cout << "We are processing: " << absolute_var << " and " << currentVar << endl;
+		// code.GenInfix();
+		FactorTail(is_assign);
 		break;
 	case RSTAPLE:
 	case RBANANA:
@@ -319,6 +322,7 @@ void Parser::Primary(bool is_assign)
             case TRUE_SYM:
             case INT_LIT:
             case FLOAT_LIT: {
+				cout << "Update: " << currentVar << " with " << scan.tokenBuffer.data() << endl;
                 symbolTable.UpdateEntry(currentVar, scan.tokenBuffer.data());
                 Literal();
                 ExprRec e;
@@ -652,67 +656,144 @@ void Parser::ForStmt()
 {
 	Match(FOR_SYM);
 	Match(LBANANA);
-	ForAssign();
+    in_for_assign = false;
+	ForAssign(); // Lets get all the pieces we need for the for loop here
 	Match(SEMICOLON);
+
+	// Get the updater label
+	updater_lbl = symbolTable.GetDataObject(currentVar).GetCurrentTempVar();
+
+    ConditionalEntry myentry = symbolTable.CreateConditional(FOR_LOOP);
+    cur_conditional = &myentry;
+    in_conditional = true;
+	in_for_stmt = true;
+
+    in_condition_check = true;
 	Condition();
-	// code.ForBegin();
+    code.Compare_Numbers(left_conditional,right_conditional,symbolTable.cur_cond->cur_jmp_lbl,comp_operator, type_assigned);
+    in_condition_check = false;
+
 	Match(SEMICOLON);
+    in_for_assign = true;
 	ForAssign();
-	// code.ForUpdate();
+    in_for_assign = false;
+
 	Match(RBANANA);
+
+    in_stmt = true;
 	StmtList();
+    in_stmt = false;
+
+    in_conditional = false;
+	in_for_stmt = false;
+
+	string replace_label = symbolTable.GetDataObject(currentVar).GetCurrentTempVar();
+	// Fix the for loop statement list
+	myentry.Fix_Loop_Labels(replace_label,updater_lbl);
+
 	Match(END_SYM);
-	// code.ForEnd();
+    code.CloseCondition();
 }
 
 void Parser::WhileStmt()
 {
+	ConditionalEntry myentry = symbolTable.CreateConditional(WHILE_LOOP);
+	cur_conditional = &myentry;
+	in_conditional = true; // entered if_else conditional
+
 	Match(WHILE_SYM);
 	Match(LBANANA);
+	in_condition_check = true;
 	Condition();
+	code.Compare_Numbers(left_conditional,right_conditional,myentry.cur_jmp_lbl,comp_operator, type_assigned); // Generate code for condition check
+	in_condition_check = false;
+
 	Match(RBANANA);
-	// code.WhileBegin();
+	in_stmt = true;
+	in_while = true;
 	StmtList();
+	in_stmt = false;
+	in_while = false;
 	Match(END_SYM);
-	// code.WhileEnd();
+
+	in_conditional = false;
+
+	// Wrap up and clean the statement
+	code.CloseCondition();
 }
 
 void Parser::LoopStmt()
 {
+	ConditionalEntry myentry = symbolTable.CreateConditional(DO_LOOP);
+	cur_conditional = &myentry;
+	in_conditional = true; // entered if_else conditional
+
 	Match(DO_SYM);
 	// code.LoopBegin();
+	in_stmt = true;
+	in_do_loop = true;
 	StmtList();
+	in_stmt = false;
+	in_do_loop = false;
 	Match(UNTIL_SYM);
 	Match(LBANANA);
+
+	in_condition_check = true;
+
+	// Get the updater label
+	updater_lbl = symbolTable.GetDataObject(absolute_var).GetCurrentTempVar();
+
 	Condition();
+	code.Compare_Numbers(left_conditional,right_conditional,myentry.cur_end_lbl,comp_operator, type_assigned); // Generate code for condition check
+	in_condition_check = false;
+
+	string replace_label = symbolTable.GetDataObject(currentVar).GetCurrentTempVar();
+	// Fix the for loop statement list
+	myentry.Fix_Loop_Labels(code.replace_lbl,code.update_lbl);
+
+
 	Match(RBANANA);
 	// code.LoopEnd();
 	Match(SEMICOLON);
+
+	in_conditional = false;
+
+	// Wrap up and clean the statement
+	code.CloseCondition();
 }
 
 void Parser::IfStmt()
 {
-	ConditionalEntry myentry = symbolTable.CreateConditional();
+	ConditionalEntry myentry = symbolTable.CreateConditional(IF_ELSE);
 	cur_conditional = &myentry;
-    in_conditional = true;
+    in_conditional = true; // entered if_else conditional
+
 	Match(IF_SYM);
 	Match(LBANANA);
-	Condition();
-	Match(RBANANA);
-	// code.IfThen();
-    in_stmt = true;
-	StmtList();
-    in_stmt = false;
-    in_conditional = false;
-    std::string if_lbl = symbolTable.GetCurrentConditionalLabel();
-    code.Compare_Numbers(left_conditional,right_conditional,if_lbl,comp_operator, type_assigned);
-    symbolTable.CloseConditional();
-    code.CloseCondition(if_lbl);
 
+	// Get the condition to check
+	in_condition_check = true;
+	Condition();
+	code.Compare_Numbers(left_conditional,right_conditional,myentry.cur_if_lbl,comp_operator, type_assigned); // Generate code for condition check
+	in_condition_check = false;
+
+	Match(RBANANA);
+
+	// Generate code for the if
+    in_if_stmt_list = true;
+	StmtList();
+    in_if_stmt_list = false;
+
+	// Generate code for the else
+	in_else_stmt_list = true;
 	ElseClause();
+	in_else_stmt_list = false;
+
 	Match(END_SYM);
-	code.Compare_Numbers_Else(symbolTable.CloseElse());
-	// code.IfEnd();
+	in_conditional = false;
+
+	// Wrap up and clean the statement
+	code.CloseCondition();
 }
 
 void Parser::ItemListTail(ExprRec& expr, bool is_assign)
